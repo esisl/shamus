@@ -347,54 +347,69 @@ canvas.addEventListener('click', (e) => {
 function updatePlayer() {
     const player = gameContext.player;
     
-    // Если происходит переход — ничего не делаем
     if (player.isTransitioning) return;
-
+    
+    // === ПРОВЕРКА ЗОН ПЕРЕХОДА ===
+    const currentZoneType = getTransitionZone(player.x, player.y);
+    const isCurrentlyInTransition = currentZoneType !== null;
+    const wasInWalkZone = player.previousZone === 'walk';
+    
+    if (isCurrentlyInTransition) {
+        // Игрок в зоне перехода
+        
+        if (wasInWalkZone) {
+            // Только что вошел из walk зоны — запускаем таймер
+            if (player.transitionZone !== currentZoneType) {
+                player.transitionZone = currentZoneType;
+                player.transitionTimer = 0;
+                console.log(`Вошли в зону перехода: ${currentZoneType} (из walk)`);
+            }
+        } else {
+            // Уже был в transition зоне — ничего не делаем
+            // (таймер не сбрасывается, но и не запускается заново)
+        }
+        
+        // Наращиваем таймер (только если вошли из walk)
+        if (wasInWalkZone || player.transitionZone === currentZoneType) {
+            player.transitionTimer += 1 / 60;
+            
+            if (player.transitionTimer >= 0.5) {
+                console.log(`Переход инициирован: ${currentZoneType}`);
+                transitionTo(currentZoneType);
+                return;
+            }
+        }
+        
+        // Запоминаем текущую зону
+        player.previousZone = currentZoneType;
+        
+    } else {
+        // Игрок в walk зоне
+        
+        if (!wasInWalkZone) {
+            // Только что вышел из transition зоны — сбрасываем
+            console.log(`Вышли из зоны перехода (возврат в walk)`);
+            player.transitionZone = null;
+            player.transitionTimer = 0;
+        }
+        
+        // Запоминаем текущую зону
+        player.previousZone = 'walk';
+    }
+    
+    // === ОБНОВЛЕНИЕ СОСТОЯНИЯ ПОКОЯ ===
     if (!player.isMoving) {
         player.state = 'stay';
         player.frame = 0;
         player.animCounter = 0;
         return;
     }
-
-    // === Проверка зон перехода ===
-    const currentTransitionZone = getTransitionZone(player.x, player.y);
     
-    if (currentTransitionZone) {
-        // Игрок в зоне перехода
-        if (player.transitionZone === currentTransitionZone) {
-            // Уже в этой зоне — наращиваем таймер
-            player.transitionTimer += 1 / 60; // Предполагаем 60 FPS
-            
-            if (player.transitionTimer >= 0.5) {
-                // 0.5 секунды прошло — выполняем переход
-                console.log(`Переход инициирован: ${currentTransitionZone}`);
-                transitionTo(currentTransitionZone);
-                return;
-            }
-        } else {
-            // Вошли в новую зону перехода — сбрасываем таймер
-            player.transitionZone = currentTransitionZone;
-            player.transitionTimer = 0;
-            console.log(`Вошли в зону перехода: ${currentTransitionZone}`);
-        }
-    } else {
-        // Игрок не в зоне перехода — сбрасываем
-        if (player.transitionZone) {
-            console.log(`Вышли из зоны перехода`);
-        }
-        player.transitionZone = null;
-        player.transitionTimer = 0;
-    }
-
-    // === Движение ===
-    if (!player.isMoving) return;
-    
+    // === ДВИЖЕНИЕ ===
     const dx = player.targetX - player.x;
     const dy = player.targetY - player.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     
-    // Если дошли (с запасом в 1 пиксель, чтобы не дрожал)
     if (distance <= player.speed) {
         player.x = player.targetX;
         player.y = player.targetY;
@@ -407,13 +422,10 @@ function updatePlayer() {
     
     const normalizedDx = dx / distance;
     const normalizedDy = dy / distance;
-
-    // Вычисляем следующую позицию
+    
     const nextX = player.x + normalizedDx * player.speed;
     const nextY = player.y + normalizedDy * player.speed;
     
-    // Проверяем walkable ИЛИ зону перехода (разрешаем заходить в зоны перехода)
-    const location = getCurrentLocation();
     const inWalkable = isWalkable(nextX, nextY);
     const inTransition = getTransitionZone(nextX, nextY) !== null;
     
@@ -484,7 +496,7 @@ function renderGameplay() {
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);
 
     // Индикатор таймера перехода
-    /*
+    
     if (gameContext.player.transitionZone) {
         const progress = gameContext.player.transitionTimer / 0.5;
         
@@ -507,7 +519,7 @@ function renderGameplay() {
         ctx.font = '12px monospace';
         ctx.fillText(`→ ${gameContext.player.transitionZone}`, barX, barY - 5);
     }
-        */
+    
 
     if (location && location.zones) {
         //console.log(`Найдено зон: ${location.zones.length}`);
