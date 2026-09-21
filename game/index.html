@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Mafia Killer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: sans-serif;
+        }
+        
+        /* Canvas фиксированного размера */
+        canvas {
+            display: block;
+            width: 1280;
+            height: 720px;
+        }
+        
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.8);
+            color: #0ff;
+        }
+        .hidden { display: none !important; }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            background: #111;
+            color: #0ff;
+            border: 1px solid #0ff;
+        }
+        button:hover { background: #0ff; color: #000; }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="1280" height="720"></canvas>
+    
+    <div id="ui-layer">
+        <div id="menu-screen" class="screen">
+            <h1>MAFIA KILLER</h1>
+            <button onclick="startGame('ru')">Русский</button>
+            <button onclick="startGame('en')">English</button>
+        </div>
+        
+        <div id="video-screen" class="screen hidden">
+            <h2>Воспроизведение интро...</h2>
+            <button onclick="skipVideo()">Пропустить</button>
+        </div>
+    </div>
+
+    <script src="atlas_data.js"></script>
+    <script src="locations.js"></script>
+    <script src="config.js"></script>
+    <script src="iso.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
