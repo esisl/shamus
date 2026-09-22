@@ -18,6 +18,7 @@ const gameContext = {
         ['SW', 'S', 'S', 'S', 'S', 'SE']
     ],
     
+    /*
     player: {
         type: 'hero',
         mapX: 2,
@@ -40,7 +41,13 @@ const gameContext = {
         isTransitioning: false,    // Флаг: происходит ли переход (загрузка новой локации)
         previousZone: 'walk'  // Тип зоны, в которой игрок был на предыдущем кадре
     },
+    */
+   // Игрок теперь создается в game.js
+    player: null,
     
+    // Массив NPC (будет заполняться позже)
+    npcs: [],
+
     // Текущее состояние
     currentState: STATE.MENU,
     currentLanguage: 'ru'
