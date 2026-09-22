@@ -47,6 +47,7 @@ const gameContext = {
     
     // Массив NPC (будет заполняться позже)
     npcs: [],
+    bullets: [],  // === МАССИВ ПУЛЬ ===
 
     // Текущее состояние
     currentState: STATE.MENU,

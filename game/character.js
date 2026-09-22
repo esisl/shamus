@@ -139,23 +139,171 @@ class Player extends Character {
     constructor(type, mapX, mapY, x, y) {
         super(type, mapX, mapY, x, y, 2.5);
         
-        // Специфичные для игрока поля
+        // Скорости
+        this.walkSpeed = 2.5;
+        this.runSpeed = 5.0;
+        
+        // Поля переходов
         this.transitionTimer = 0;
         this.transitionZone = null;
         this.isTransitioning = false;
         this.previousZone = 'walk';
+        
+        // Для обработки двойного клика
+        this.pendingMove = null;  // {x, y, timer}
+
+        // === Стрельба ===
+        this.isShooting = false;
+        this.shootFrameCounter = 0;
+        this.shootDuration = 30;  // Длительность анимации стрельбы (кадров)
+    }
+
+    // Стрельба
+    shoot() {
+        // Нельзя стрелять во время движения или перехода
+        if (this.isMoving || this.isTransitioning || this.isShooting) return;
+        
+        this.isShooting = true;
+        this.shootFrameCounter = 0;
+        this.state = 'shoot';
+        this.frame = 0;
+        this.animCounter = 0;
+        
+        // Получаем данные спрайта для вычисления точки вылета
+        const spriteData = getSpriteData(this.type, 'shoot', this.direction, 0);
+        const bulletOffsetY = spriteData ? -(spriteData.h * 2 / 3) : -80;
+        
+        // Создаем пулю
+        console.log('direction', this.direction);
+        const bullet = new Bullet(
+            this.x,
+            this.y + bulletOffsetY,  // 2/3 высоты спрайта вверх от ног
+            this.direction+90,
+            7  // Скорость пули (подберите под себя)
+        );
+        
+        gameContext.bullets.push(bullet);
+        console.log(`Выстрел в направлении ${this.direction}°`);
     }
     
-    // Обработка клика мыши
+    // Обработка клика мыши (с задержкой для определения dblclick)
     handleClick(clickX, clickY) {
-        this.moveTo(clickX, clickY);
-        console.log(`Цель: X=${clickX.toFixed(0)}, Y=${clickY.toFixed(0)}`);
+        if (this.pendingMove) {
+            // Уже есть ожидающий клик — это второй клик = dblclick
+            clearTimeout(this.pendingMove.timer);
+            this.pendingMove = null;
+            this.runTo(clickX, clickY);
+            console.log(`Бег: X=${clickX.toFixed(0)}, Y=${clickY.toFixed(0)}`);
+        } else {
+            // Первый клик — запоминаем и ждем
+            const timer = setTimeout(() => {
+                // Таймер истек, dblclick не пришел — это обычный walk
+                if (this.pendingMove) {
+                    this.walkTo(this.pendingMove.x, this.pendingMove.y);
+                    console.log(`Ходьба: X=${this.pendingMove.x.toFixed(0)}, Y=${this.pendingMove.y.toFixed(0)}`);
+                    this.pendingMove = null;
+                }
+            }, 250);
+            
+            this.pendingMove = { x: clickX, y: clickY, timer };
+        }
     }
     
+    // Ходьба к точке
+    walkTo(x, y) {
+        this.speed = this.walkSpeed;
+        this.moveTo(x, y);
+    }
+
+    // Бег к точке
+    runTo(x, y) {
+        this.speed = this.runSpeed;
+        this.moveTo(x, y);
+    }
+
+    // Переопределяем updateMovement — используем текущий state для анимации
+    updateMovement() {
+        if (!this.isMoving) {
+            this.state = 'stay';
+            this.frame = 0;
+            this.animCounter = 0;
+            return;
+        }
+        
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance <= this.speed) {
+            this.x = this.targetX;
+            this.y = this.targetY;
+            this.isMoving = false;
+            this.state = 'stay';
+            this.frame = 0;
+            this.animCounter = 0;
+            return;
+        }
+        
+        const normalizedDx = dx / distance;
+        const normalizedDy = dy / distance;
+        
+        const nextX = this.x + normalizedDx * this.speed;
+        const nextY = this.y + normalizedDy * this.speed;
+        
+        if (!isWalkable(nextX, nextY, this.mapX, this.mapY)) {
+            this.isMoving = false;
+            this.state = 'stay';
+            this.frame = 0;
+            this.animCounter = 0;
+            return;
+        }
+        
+        this.x = nextX;
+        this.y = nextY;
+        
+        this.direction = getDirectionFromVector(normalizedDx, normalizedDy);
+        
+        // === ВАЖНО: используем 'run' или 'walk' в зависимости от скорости ===
+        this.state = this.speed > this.walkSpeed ? 'run' : 'walk';
+        
+        this.animCounter++;
+        if (this.animCounter >= this.animSpeed) {
+            const frameCount = getFrameCount(this.type, this.state);
+            if (frameCount > 0) {
+                this.frame = (this.frame + 1) % frameCount;
+            }
+            this.animCounter = 0;
+        }
+    }
+
     // Переопределяем update — добавляем логику переходов
     update() {
         if (this.isTransitioning) return;
         
+        // === Обработка стрельбы ===
+        if (this.isShooting) {
+            this.shootFrameCounter++;
+            
+            // Анимация стрельбы
+            this.animCounter++;
+            if (this.animCounter >= this.animSpeed) {
+                const frameCount = getFrameCount(this.type, 'shoot');
+                if (frameCount > 0) {
+                    this.frame = (this.frame + 1) % frameCount;
+                }
+                this.animCounter = 0;
+            }
+            
+            // Завершение стрельбы
+            if (this.shootFrameCounter >= this.shootDuration) {
+                this.isShooting = false;
+                this.state = 'stay';
+                this.frame = 0;
+                this.animCounter = 0;
+            }
+            return;  // Во время стрельбы не обрабатываем движение и переходы
+        }
+
         // === Проверка зон перехода ===
         this.checkTransition();
         
@@ -200,6 +348,8 @@ class Player extends Character {
             this.previousZone = 'walk';
         }
     }
+
+
     
     // Выполняет переход в новую локацию
     async transitionTo(direction) {
@@ -282,6 +432,81 @@ class Player extends Character {
             ctx.fillStyle = '#0ff';
             ctx.font = '12px monospace';
             ctx.fillText(`→ ${this.transitionZone}`, barX, barY - 5);
+        }
+    }
+}
+
+// --- Класс пули ---
+
+class Bullet {
+    constructor(x, y, direction, speed = 7) {
+        this.x = x;
+        this.y = y;
+        this.direction = direction;
+        this.speed = speed;
+        this.age = 0;          // Количество кадров с момента вылета
+        this.frame = 0;
+        this.animCounter = 0;
+        this.animSpeed = 2;    // Скорость анимации пули
+        this.alive = true;
+        this.type = 'fire';    // Тип спрайта в ATLAS_DATA
+        this.animation = 'fly';
+        
+        // Вычисляем вектор движения из направления
+        const angle = direction * Math.PI / 180;
+        console.log('angle', angle);
+        this.dx = Math.sin(angle);
+        this.dy = -Math.cos(angle);
+    }
+    
+    update() {
+        if (!this.alive) return;
+        
+        this.x += this.dx * this.speed;
+        this.y += this.dy * this.speed;
+        this.age++;
+        
+        // Анимация пули
+        this.animCounter++;
+        if (this.animCounter >= this.animSpeed) {
+            const frameCount = getFrameCount(this.type, this.animation);
+            if (frameCount > 0) {
+                this.frame = (this.frame + 1) % frameCount;
+            }
+            this.animCounter = 0;
+        }
+        
+        // Пуля погибает, если вышла за границы экрана или прожила слишком долго
+        if (this.x < -50 || this.x > 1330 || this.y < -50 || this.y > 770) {
+            this.alive = false;
+        }
+        if (this.age > 120) {  // 2 секунды при 60 FPS
+            this.alive = false;
+        }
+    }
+    
+    draw(ctx) {
+        if (!this.alive) return;
+        if (!resources.atlas) return;
+        
+        // Первые 10 кадров не отображаем (чтобы не "проскальзывала" через героя)
+        if (this.age < 10) return;
+        
+        // Для пули не используем DIRECTION_MAP — она летит в направлении выстрела
+        const frameKey = String(this.frame);
+        const spriteData = ATLAS_DATA[this.type]?.[this.animation]?.[frameKey];
+        
+        if (spriteData) {
+            // Пуля рисуется по центру своей позиции
+            const drawX = this.x - spriteData.w / 2;
+            const drawY = this.y - spriteData.h / 2;
+            
+            ctx.drawImage(
+                resources.atlas,
+                spriteData.x, spriteData.y, spriteData.w, spriteData.h,
+                drawX, drawY,
+                spriteData.w, spriteData.h
+            );
         }
     }
 }

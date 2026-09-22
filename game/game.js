@@ -57,6 +57,24 @@ canvas.addEventListener('click', (e) => {
     gameContext.player.handleClick(clickX, clickY);
 });
 
+// --- Отключение контекстного меню на ПКМ ---
+canvas.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+// --- Обработка нажатий мыши (включая ПКМ) ---
+canvas.addEventListener('mousedown', (e) => {
+    if (gameContext.currentState !== STATE.GAMEPLAY) return;
+    if (!gameContext.player) return;
+    
+    if (e.button === 0) {
+        // ЛКМ — уже обрабатывается через 'click'
+    } else if (e.button === 2) {
+        // ПКМ — стрельба
+        gameContext.player.shoot();
+    }
+});
+
 // --- Отрисовка полигонов (для отладки) ---
 function drawDebugPolygons() {
     const location = getCurrentLocation(
@@ -105,7 +123,11 @@ function update() {
             gameContext.player.update();
         }
         
-        // В будущем: обновление NPC
+        // === Обновление пуль ===
+        gameContext.bullets.forEach(bullet => bullet.update());
+        // Удаляем мертвые пули
+        gameContext.bullets = gameContext.bullets.filter(b => b.alive);
+        
         // gameContext.npcs.forEach(npc => npc.update());
     }
 }
@@ -134,11 +156,14 @@ function renderGameplay() {
     
     // 4. Игрок
     gameContext.player.draw(ctx);
+
+    // 5. === ПУЛИ (между игроком и передним планом) ===
+    gameContext.bullets.forEach(bullet => bullet.draw(ctx));
     
-    // 5. Передний фон
+    // 6. Передний фон
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);
     
-    // 6. Отладочная информация
+    // 7. Отладочная информация
     ctx.fillStyle = '#0ff';
     ctx.font = '14px monospace';
     const locId = gameContext.map[gameContext.player.mapY][gameContext.player.mapX];
