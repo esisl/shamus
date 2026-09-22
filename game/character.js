@@ -158,11 +158,20 @@ class Player extends Character {
         this.shootDuration = 30;  // Длительность анимации стрельбы (кадров)
     }
 
-    // Стрельба
-    shoot() {
+    // Стрельба с поворотом в сторону клика
+    shoot(clickX, clickY) {
         // Нельзя стрелять во время движения или перехода
         if (this.isMoving || this.isTransitioning || this.isShooting) return;
         
+        // Вычисляем направление к точке клика
+        const dx = clickX - this.x;
+        const dy = clickY - this.y;
+        const shootDirection = getDirectionFromVector(dx, dy);
+        
+        // Поворачиваем героя
+        this.direction = shootDirection;
+        
+        // Начинаем стрельбу
         this.isShooting = true;
         this.shootFrameCounter = 0;
         this.state = 'shoot';
@@ -173,17 +182,16 @@ class Player extends Character {
         const spriteData = getSpriteData(this.type, 'shoot', this.direction, 0);
         const bulletOffsetY = spriteData ? -(spriteData.h * 2 / 3) : -80;
         
-        // Создаем пулю
-        console.log('direction', this.direction);
+        // Создаем пулю в направлении взгляда героя
         const bullet = new Bullet(
             this.x,
-            this.y + bulletOffsetY,  // 2/3 высоты спрайта вверх от ног
-            this.direction+90,
-            7  // Скорость пули (подберите под себя)
+            this.y + bulletOffsetY,
+            this.direction+90,  // Пуля летит в направлении взгляда героя
+            5
         );
         
         gameContext.bullets.push(bullet);
-        console.log(`Выстрел в направлении ${this.direction}°`);
+        console.log(`Выстрел в направлении ${this.direction}° (клик: ${clickX.toFixed(0)}, ${clickY.toFixed(0)})`);
     }
     
     // Обработка клика мыши (с задержкой для определения dblclick)
@@ -447,7 +455,7 @@ class Bullet {
         this.age = 0;          // Количество кадров с момента вылета
         this.frame = 0;
         this.animCounter = 0;
-        this.animSpeed = 2;    // Скорость анимации пули
+        this.animSpeed = 5;    // Скорость анимации пули
         this.alive = true;
         this.type = 'fire';    // Тип спрайта в ATLAS_DATA
         this.animation = 'fly';

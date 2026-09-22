@@ -70,8 +70,12 @@ canvas.addEventListener('mousedown', (e) => {
     if (e.button === 0) {
         // ЛКМ — уже обрабатывается через 'click'
     } else if (e.button === 2) {
-        // ПКМ — стрельба
-        gameContext.player.shoot();
+        // ПКМ — стрельба с передачей координат клика
+        const rect = canvas.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const clickY = e.clientY - rect.top;
+        
+        gameContext.player.shoot(clickX, clickY);
     }
 });
 

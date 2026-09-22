@@ -18,30 +18,6 @@ const gameContext = {
         ['SW', 'S', 'S', 'S', 'S', 'SE']
     ],
     
-    /*
-    player: {
-        type: 'hero',
-        mapX: 2,
-        mapY: 2,
-        x: 640,          // Центр по X (1280 / 2)
-        y: 360,          // Центр по Y (720 / 2)
-        state: 'stay',
-        direction: 180,
-        frame: 0,
-        speed: 2.5,      // Пикселей за кадр (подберите под себя)
-        animSpeed: 6,
-        animCounter: 0,
-        targetX: null,
-        targetY: null,
-        isMoving: false,
-    
-        // === Переходы между локациями ===
-        transitionTimer: 0,       // Время нахождения в зоне перехода (секунды)
-        transitionZone: null,     // Тип зоны перехода, в которой находится игрок (E/S/W/N)
-        isTransitioning: false,    // Флаг: происходит ли переход (загрузка новой локации)
-        previousZone: 'walk'  // Тип зоны, в которой игрок был на предыдущем кадре
-    },
-    */
    // Игрок теперь создается в game.js
     player: null,
     
