@@ -18,7 +18,16 @@ function skipVideo() {
     document.getElementById('video-screen').classList.add('hidden');
     gameContext.currentState = STATE.GAMEPLAY;
     
-    // Игрок уже создан в startGame(), здесь ничего не нужно
+    // Создаем игрока
+    //gameContext.player = new Player('hero', 2, 2, 640, 360);
+    
+    // === Создаем бомжа ===
+    const bomzh = new Character('bomzh', 2, 1, 728, 335);
+    bomzh.state = 'sit';  // Сидит
+    bomzh.direction = 270;  // Смотрит на запад
+    gameContext.npcs.push(bomzh);
+    
+    console.log(`Создан бомж в локации (${bomzh.mapX}, ${bomzh.mapY})`);
 }
 
 // --- Загрузка ресурсов ---
@@ -128,6 +137,14 @@ function update() {
         if (gameContext.player) {
             gameContext.player.update();
         }
+
+        // === Обновление NPC ===
+        gameContext.npcs.forEach(npc => {
+            // Только если NPC в той же локации, что и игрок
+            if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
+                npc.updateMovement();  // Для неподвижных NPC это просто обновит анимацию
+            }
+        });
         
         // === Обновление пуль ===
         gameContext.bullets.forEach(bullet => bullet.update());
@@ -158,7 +175,11 @@ function renderGameplay() {
     drawDebugPolygons();
     
     // 3. NPC (в будущем)
-    // gameContext.npcs.forEach(npc => npc.draw(ctx));
+    gameContext.npcs.forEach(npc => {
+        if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
+            npc.draw(ctx);
+        }
+    });
     
     // 4. Игрок
     gameContext.player.draw(ctx);
@@ -176,6 +197,8 @@ function renderGameplay() {
     ctx.fillText(`Локация: ${locId}`, 10, 20);
     ctx.fillText(`Позиция: ${gameContext.player.x.toFixed(0)}, ${gameContext.player.y.toFixed(0)}`, 10, 40);
     ctx.fillText(`На карте: (${gameContext.player.mapX}, ${gameContext.player.mapY})`, 10, 60);
+    ctx.fillText(`Пуль: ${gameContext.bullets.length}`, 10, 80);
+    ctx.fillText(`NPC: ${gameContext.npcs.length}`, 10, 100);
 }
 
 // --- Запуск ---

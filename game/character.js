@@ -134,28 +134,22 @@ class Character {
 }
 
 // --- Класс игрока (наследует Character) ---
-
 class Player extends Character {
     constructor(type, mapX, mapY, x, y) {
         super(type, mapX, mapY, x, y, 2.5);
         
-        // Скорости
         this.walkSpeed = 2.5;
         this.runSpeed = 5.0;
         
-        // Поля переходов
-        this.transitionTimer = 0;
         this.transitionZone = null;
         this.isTransitioning = false;
         this.previousZone = 'walk';
         
-        // Для обработки двойного клика
-        this.pendingMove = null;  // {x, y, timer}
-
-        // === Стрельба ===
+        this.pendingMove = null;
+        
         this.isShooting = false;
         this.shootFrameCounter = 0;
-        this.shootDuration = 30;  // Длительность анимации стрельбы (кадров)
+        this.shootDuration = 30;
     }
 
     // Стрельба с поворотом в сторону клика
@@ -320,51 +314,21 @@ class Player extends Character {
         const isCurrentlyInTransition = currentZoneType !== null;
         const wasInWalkZone = this.previousZone === 'walk';
         
+        if (isCurrentlyInTransition && wasInWalkZone) {
+            // Игрок только что вошел из walk зоны в transition зону — переходим
+            console.log(`✓ Переход: ${currentZoneType}`);
+            this.transitionTo(currentZoneType);
+            return;
+        }
+        
+        // Обновляем previousZone
         if (isCurrentlyInTransition) {
-            // Игрок в зоне перехода
-            
-            if (wasInWalkZone) {
-                // Только что вошел из walk зоны — инициализация
-                if (this.transitionZone !== currentZoneType) {
-                    this.transitionZone = currentZoneType;
-                    this.transitionTimer = 0;
-                    console.log(`✓ Вошли в зону перехода: ${currentZoneType} (из walk)`);
-                }
-            } else if (this.transitionZone !== currentZoneType) {
-                // Перешли из одной transition зоны в другую
-                console.log(`⚠ Переход между transition зонами: ${this.transitionZone} -> ${currentZoneType}`);
-                this.transitionZone = currentZoneType;
-                this.transitionTimer = 0;
-            }
-            
-            // === НАРАЩИВАЕМ ТАЙМЕР пока игрок в transition зоне И transitionZone === currentZoneType ===
-            if (this.transitionZone === currentZoneType) {
-                this.transitionTimer += 1 / 60;
-                
-                if (this.transitionTimer >= 0.5) {
-                    console.log(`✓✓ Переход инициирован: ${currentZoneType}`);
-                    this.transitionTo(currentZoneType);
-                    return;
-                }
-            }
-            
             this.previousZone = currentZoneType;
-            
         } else {
-            // Игрок в walk зоне
-            
-            if (!wasInWalkZone) {
-                console.log(`✓ Вышли из зоны перехода (возврат в walk)`);
-                this.transitionZone = null;
-                this.transitionTimer = 0;
-            }
-            
             this.previousZone = 'walk';
         }
     }
 
-
-    
     // Выполняет переход в новую локацию
     transitionTo(direction) {
         this.isTransitioning = true;
@@ -400,7 +364,6 @@ class Player extends Character {
         this.mapX = newMapX;
         this.mapY = newMapY;
         
-        // Загружаем ресурсы синхронно
         loadSceneResources();
         
         const locId = gameContext.map[newMapY][newMapX];
@@ -417,16 +380,10 @@ class Player extends Character {
             console.warn(`Зона ${spawnZoneType} не найдена в локации ${locId}, спавн в центре`);
         }
         
-        this.transitionTimer = 0;
+        // Устанавливаем previousZone в тип spawn-зоны
         this.transitionZone = spawnZoneType;
         this.previousZone = spawnZoneType;
-        
-        this.justSpawned = true;
-        this.spawnCooldown = 1.0;
-        
         this.isTransitioning = false;
-        
-        console.log(`✓✓✓ Переход завершен. Кулдаун: ${this.spawnCooldown}с`);
     }
     
     // Переопределяем draw — добавляем индикатор перехода
