@@ -89,20 +89,47 @@ function getZoneCenter(zone) {
 
 // Определяет ближайшее из 8 направлений по вектору движения
 function getDirectionFromVector(dx, dy) {
-    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    angle = (angle + 360) % 360;
+    // В canvas Y растет вниз.
+    // atan2(dy, dx): 0=вправо(E), PI/2=вниз(S), -PI/2=вверх(N)
+    
+    let angleRad = Math.atan2(dy, dx);
+    let angleDeg = angleRad * 180 / Math.PI;
+    
+    // Приводим к диапазону [0, 360)
+    if (angleDeg < 0) angleDeg += 360;
+    
+    // Теперь у нас есть угол в системе координат экрана (0=E, 90=S, 180=W, 270=N)
+    // Но нам нужно вернуть ключ спрайта (0=N, 45=NE, 90=E...)
+    // Проще всего использовать таблицу соответствия углов экранных -> игровым направлениям
     
     const directions = [0, 45, 90, 135, 180, 225, 270, 315];
-    let closest = directions[0];
-    let minDiff = Math.abs(angle - closest);
+    let closestDirKey = 0;
+    let minDiff = Infinity;
     
-    for (let i = 1; i < directions.length; i++) {
-        const diff = Math.abs(angle - directions[i]);
-        const diffWrapped = Math.min(diff, 360 - diff);
-        if (diffWrapped < minDiff) {
-            minDiff = diffWrapped;
-            closest = directions[i];
+    for (let dir of directions) {
+        // Определяем экранный угол для этого направления
+        // N(0) -> 270, NE(45) -> 315, E(90) -> 0, SE(135) -> 45, S(180) -> 90, SW(225) -> 135, W(270) -> 180, NW(315) -> 225
+        let screenAngleForDir = 0;
+        
+        switch(dir) {
+            case 0:   screenAngleForDir = 0; break; // N
+            case 45:  screenAngleForDir = 45; break; // NE
+            case 90:  screenAngleForDir = 90;   break; // E
+            case 135: screenAngleForDir = 135;  break; // SE
+            case 180: screenAngleForDir = 180;  break; // S
+            case 225: screenAngleForDir = 225; break; // SW
+            case 270: screenAngleForDir = 270; break; // W
+            case 315: screenAngleForDir = 315; break; // NW
+        }
+        
+        let diff = Math.abs(angleDeg - screenAngleForDir);
+        if (diff > 180) diff = 360 - diff;
+        
+        if (diff < minDiff) {
+            minDiff = diff;
+            closestDirKey = dir;
         }
     }
-    return closest;
+    
+    return closestDirKey;
 }

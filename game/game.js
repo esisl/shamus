@@ -8,9 +8,9 @@ function startGame(lang) {
     document.getElementById('video-screen').classList.remove('hidden');
     gameContext.currentState = STATE.VIDEO;
     
-    // === Создаем игрока ДО загрузки ресурсов ===
     gameContext.player = new Player('hero', 2, 2, 640, 360);
     
+    // Вызываем синхронно
     loadSceneResources();
 }
 
@@ -31,18 +31,20 @@ function loadImage(src) {
     });
 }
 
-async function loadSceneResources() {
-    try {
-        const locId = gameContext.map[gameContext.player.mapY][gameContext.player.mapX];
-        
-        resources.back = await loadImage(`assets/backgrounds/back/${locId}.png`);
-        resources.front = await loadImage(`assets/backgrounds/front/${locId}.png`);
-        resources.atlas = await loadImage('assets/atlas_0.png');
-        
-        console.log(`Загружена локация: ${locId}`);
-    } catch (e) {
-        console.error("Ошибка загрузки ресурсов:", e);
-    }
+function loadSceneResources() {
+    const locId = gameContext.map[gameContext.player.mapY][gameContext.player.mapX];
+    
+    // Загружаем изображения синхронно (без await)
+    resources.back = new Image();
+    resources.back.src = `assets/backgrounds/back/${locId}.png`;
+    
+    resources.front = new Image();
+    resources.front.src = `assets/backgrounds/front/${locId}.png`;
+    
+    resources.atlas = new Image();
+    resources.atlas.src = 'assets/atlas_0.png';
+    
+    console.log(`Загружена локация: ${locId}`);
 }
 
 // --- Обработка мыши ---
