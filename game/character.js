@@ -118,6 +118,13 @@ class Character {
             this.direction,
             this.frame
         );
+
+        if(this.type == 'bomzh'){
+            console.log('this.state', this.state);
+            console.log('this.direction', this.direction);
+            console.log('this.frame', this.frame);
+            console.log('spriteData', spriteData);
+        }
         
         if (spriteData) {
             const drawX = this.x - spriteData.w / 2;
@@ -389,6 +396,26 @@ class Player extends Character {
     // Переопределяем draw — добавляем индикатор перехода
     draw(ctx) {
         super.draw(ctx);
+        
+        // Индикатор таймера перехода
+        if (this.transitionZone) {
+            const progress = this.transitionTimer / 0.5;
+            
+            const barWidth = 40;
+            const barHeight = 6;
+            const barX = this.x - barWidth / 2;
+            const barY = this.y - 120;
+            
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(barX - 1, barY - 1, barWidth + 2, barHeight + 2);
+            
+            ctx.fillStyle = '#0ff';
+            ctx.fillRect(barX, barY, barWidth * progress, barHeight);
+            
+            ctx.fillStyle = '#0ff';
+            ctx.font = '12px monospace';
+            ctx.fillText(`→ ${this.transitionZone}`, barX, barY - 5);
+        }
     }
 }
 

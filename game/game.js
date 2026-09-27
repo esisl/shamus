@@ -23,7 +23,7 @@ function skipVideo() {
     
     // === Создаем бомжа ===
     const bomzh = new Character('bomzh', 2, 1, 728, 335);
-    bomzh.state = 'stay';  // Сидит
+    bomzh.state = 'sit';  // Сидит
     bomzh.direction = 135;  // Смотрит на запад
     gameContext.npcs.push(bomzh);
     
@@ -174,44 +174,18 @@ function renderGameplay() {
     // 2. Отладка: полигоны
     drawDebugPolygons();
     
-    // 3. === Собираем все объекты для отрисовки ===
-    const drawables = [];
-    
-    // Игрок (если в текущей локации)
-    drawables.push({
-        type: 'player',
-        obj: gameContext.player,
-        y: gameContext.player.y
-    });
-
-    // NPC (только из текущей локации)
+    // 3. NPC (в будущем)
     gameContext.npcs.forEach(npc => {
         if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
-            drawables.push({
-                type: 'npc',
-                obj: npc,
-                y: npc.y
-            });
+            npc.draw(ctx);
         }
     });
-
-    // Пули (все, так как они летят через всю сцену)
-    gameContext.bullets.forEach(bullet => {
-        drawables.push({
-            type: 'bullet',
-            obj: bullet,
-            y: bullet.y
-        });
-    });
     
-    // 4. === Сортируем по Y (от меньшего к большему = от дальних к ближним) ===
-    drawables.sort((a, b) => a.y - b.y);
-    
-    // 5. === Отрисовываем в порядке сортировки ===
-    drawables.forEach(item => {
-        item.obj.draw(ctx);
-    });
+    // 4. Игрок
+    gameContext.player.draw(ctx);
 
+    // 5. === ПУЛИ (между игроком и передним планом) ===
+    gameContext.bullets.forEach(bullet => bullet.draw(ctx));
     
     // 6. Передний фон
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);
