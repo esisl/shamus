@@ -26,8 +26,13 @@ function skipVideo() {
     bomzh.state = 'sit';  // Сидит
     bomzh.direction = 135;  // Смотрит на запад
     gameContext.npcs.push(bomzh);
-    
-    console.log(`Создан бомж в локации (${bomzh.mapX}, ${bomzh.mapY})`);
+
+    // === Создаем путану ===
+    const puta = new Puta('puta', 2, 1, 553, 272);
+    puta.state = 'stay';
+    puta.direction = 45;
+    gameContext.npcs.push(puta);
+
 }
 
 // --- Загрузка ресурсов ---
@@ -140,18 +145,22 @@ function update() {
 
         // === Обновление NPC ===
         gameContext.npcs.forEach(npc => {
-            // Только если NPC в той же локации, что и игрок
             if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
-                npc.updateMovement();  // Для неподвижных NPC это просто обновит анимацию
+                npc.update();  // Теперь update() обрабатывает и смерть
             }
         });
+
+        // === Удаляем помеченных NPC ===
+        const before = gameContext.npcs.length;
+        gameContext.npcs = gameContext.npcs.filter(npc => !npc.removed);
+        if (gameContext.npcs.length < before) {
+            console.log(`Удалено NPC: ${before - gameContext.npcs.length}`);
+        }
         
         // === Обновление пуль ===
         gameContext.bullets.forEach(bullet => bullet.update());
         // Удаляем мертвые пули
         gameContext.bullets = gameContext.bullets.filter(b => b.alive);
-        
-        // gameContext.npcs.forEach(npc => npc.update());
     }
 }
 
@@ -174,18 +183,43 @@ function renderGameplay() {
     // 2. Отладка: полигоны
     drawDebugPolygons();
     
-    // 3. NPC (в будущем)
+    // 3. === Собираем все объекты для отрисовки ===
+    const drawables = [];
+    
+    // Игрок (если в текущей локации)
+    drawables.push({
+        type: 'player',
+        obj: gameContext.player,
+        y: gameContext.player.y
+    });
+    
+    // NPC (только из текущей локации)
     gameContext.npcs.forEach(npc => {
         if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
-            npc.draw(ctx);
+            drawables.push({
+                type: 'npc',
+                obj: npc,
+                y: npc.y
+            });
         }
     });
     
-    // 4. Игрок
-    gameContext.player.draw(ctx);
-
-    // 5. === ПУЛИ (между игроком и передним планом) ===
-    gameContext.bullets.forEach(bullet => bullet.draw(ctx));
+    // Пули (все, так как они летят через всю сцену)
+    gameContext.bullets.forEach(bullet => {
+        drawables.push({
+            type: 'bullet',
+            obj: bullet,
+            y: bullet.y
+        });
+    });
+    
+    // 4. === Сортируем по Y (от меньшего к большему = от дальних к ближним) ===
+    drawables.sort((a, b) => a.y - b.y);
+    
+    // 5. === Отрисовываем в порядке сортировки ===
+    drawables.forEach(item => {
+        item.obj.draw(ctx);
+    });
     
     // 6. Передний фон
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);

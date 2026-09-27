@@ -133,3 +133,29 @@ function getDirectionFromVector(dx, dy) {
     
     return closestDirKey;
 }
+
+// Проверка, не пересекается ли точка с bounding box живого NPC
+function collidesWithNPC(x, y, mapX, mapY, excludeCharacter = null) {
+    for (const npc of gameContext.npcs) {
+        // Пропускаем NPC из других локаций
+        if (npc.mapX !== mapX || npc.mapY !== mapY) continue;
+        
+        // Пропускаем мертвых и умирающих NPC
+        if (npc.status !== 'alive') continue;
+
+        if (npc.removed) continue;  // === Не учитываем удаленных ===
+        
+        // Пропускаем указанного персонажа (если нужно)
+        if (excludeCharacter && npc === excludeCharacter) continue;
+        
+        // Проверяем расстояние между точкой и NPC
+        const dx = x - npc.x;
+        const dy = y - npc.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < npc.collisionRadius) {
+            return true;
+        }
+    }
+    return false;
+}
