@@ -38,6 +38,20 @@ function skipVideo() {
     diler.state = 'stay';
     diler.direction = 315;
     gameContext.npcs.push(diler);
+
+    // === Создаем 5 бандитов в зоне N локации 2,2 ===
+    const zoneN = findZoneByType('NESW', 'N');  // NESW — это locId для локации 2,2
+    if (zoneN) {
+        const center = getZoneCenter(zoneN);
+        const spacing = 80;  // Расстояние между бандитами
+        
+        for (let i = 0; i < 5; i++) {
+            const offsetX = (i - 2) * spacing;  // -2, -1, 0, 1, 2
+            const bandit = new BigBandit(2, 2, center.x + offsetX, center.y);
+            gameContext.npcs.push(bandit);
+        }
+        console.log(`Создано 5 бандитов в зоне N локации 2,2`);
+    }
 }
 
 // --- Загрузка ресурсов ---
@@ -195,7 +209,8 @@ function renderGameplay() {
     drawables.push({
         type: 'player',
         obj: gameContext.player,
-        y: gameContext.player.y
+        y: gameContext.player.y,
+        x: gameContext.player.x
     });
     
     // NPC (только из текущей локации)
@@ -204,7 +219,8 @@ function renderGameplay() {
             drawables.push({
                 type: 'npc',
                 obj: npc,
-                y: npc.y
+                y: npc.y,
+                x: npc.x
             });
         }
     });
@@ -218,8 +234,13 @@ function renderGameplay() {
         });
     });
     
-    // 4. === Сортируем по Y (от меньшего к большему = от дальних к ближним) ===
-    drawables.sort((a, b) => a.y - b.y);
+    /// 4. === Сортируем по Y, затем по X (для стабильности) ===
+    drawables.sort((a, b) => {
+        if (Math.abs(a.y - b.y) < 1) {  // Если Y почти одинаковые
+            return a.x - b.x;  // Сортируем по X
+        }
+        return a.y - b.y;  // Иначе по Y
+    });
     
     // 5. === Отрисовываем в порядке сортировки ===
     drawables.forEach(item => {

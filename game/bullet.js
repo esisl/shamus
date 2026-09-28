@@ -63,6 +63,46 @@ class Bullet {
 
     // === Проверка попадания в NPC через swept collision ===
     checkNPCCollision() {
+    const player = gameContext.player;
+    if (!player) return;
+    
+    for (const npc of gameContext.npcs) {
+        // Только NPC из текущей локации
+        if (npc.mapX !== player.mapX || npc.mapY !== player.mapY) continue;
+        
+        // Только живые NPC
+        if (npc.status !== 'alive') continue;
+        if (npc.removed) continue;
+        
+        // === Проверка swept collision (отрезок движения пули) ===
+        if (segmentIntersectsCircle(
+            this.prevX, this.prevY, 
+            this.x, this.y,
+            npc.x, npc.y, 
+            npc.collisionRadius
+        )) {
+            // Попадание!
+            npc.kill();
+            this.alive = false;
+            console.log(`Пуля попала в NPC ${npc.type}`);
+            return;
+        }
+        
+        // === Дополнительная проверка: прямое попадание в текущей позиции ===
+        const dx = this.x - npc.x;
+        const dy = this.y - npc.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < npc.collisionRadius) {
+            npc.kill();
+            this.alive = false;
+            console.log(`Пуля попала в NPC ${npc.type} (прямое попадание)`);
+            return;
+        }
+    }
+}
+    /*
+    checkNPCCollision() {
         const player = gameContext.player;
         if (!player) return;
         
@@ -88,6 +128,7 @@ class Bullet {
             }
         }
     }
+        */
     
     draw(ctx) {
         if (!this.alive || !resources.atlas) return;
