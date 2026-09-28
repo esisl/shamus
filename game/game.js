@@ -33,6 +33,11 @@ function skipVideo() {
     puta.direction = 45;
     gameContext.npcs.push(puta);
 
+    // === Создаем дилера ===
+    const diler = new Diler('diler', 2, 2, 292, 418);
+    diler.state = 'stay';
+    diler.direction = 315;
+    gameContext.npcs.push(diler);
 }
 
 // --- Загрузка ресурсов ---

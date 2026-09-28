@@ -159,3 +159,46 @@ function collidesWithNPC(x, y, mapX, mapY, excludeCharacter = null) {
     }
     return false;
 }
+
+// Проверка пересечения отрезка (x1,y1)-(x2,y2) с кругом (cx,cy,radius)
+// Возвращает true, если отрезок касается или пересекает круг
+function segmentIntersectsCircle(x1, y1, x2, y2, cx, cy, radius) {
+    // Вектор отрезка
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    
+    // Вектор от начала отрезка до центра круга
+    const fx = x1 - cx;
+    const fy = y1 - cy;
+    
+    // Коэффициенты квадратного уравнения: at² + bt + c = 0
+    // Это расстояние от точки на отрезке до центра круга
+    const a = dx * dx + dy * dy;
+    const b = 2 * (fx * dx + fy * dy);
+    const c = fx * fx + fy * fy - radius * radius;
+    
+    // Если отрезок вырожден в точку (пуля не двигалась)
+    if (a === 0) {
+        return Math.sqrt(c) <= 0;
+    }
+    
+    // Дискриминант
+    const discriminant = b * b - 4 * a * c;
+    
+    if (discriminant < 0) {
+        // Нет пересечения с бесконечной линией
+        return false;
+    }
+    
+    // Проверяем, попадает ли точка пересечения в пределы отрезка [0, 1]
+    const sqrtDisc = Math.sqrt(discriminant);
+    const t1 = (-b - sqrtDisc) / (2 * a);
+    const t2 = (-b + sqrtDisc) / (2 * a);
+    
+    // Если хотя бы один корень в диапазоне [0, 1] — отрезок пересекает круг
+    if ((t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1) || (t1 < 0 && t2 > 1)) {
+        return true;
+    }
+    
+    return false;
+}

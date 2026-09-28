@@ -57,13 +57,17 @@ class Character {
 
     // Запуск смерти
     kill() {
-        if (this.status !== 'alive') return;  // Уже умирает или мертв
+        if (this.status !== 'alive') return;
         
         this.status = 'dying';
         this.state = 'die';
         this.frame = 0;
         this.animCounter = 0;
         this.isMoving = false;
+        this.speed = 0;  // === Обнуляем скорость ===
+        this.targetX = null;
+        this.targetY = null;
+        
         console.log(`NPC ${this.type} начал умирать`);
     }
 
