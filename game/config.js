@@ -27,7 +27,42 @@ const gameContext = {
 
     // Текущее состояние
     currentState: STATE.MENU,
-    currentLanguage: 'ru'
+    currentLanguage: 'ru',
+
+    // === НОВОЕ: Хранит время входа и заспавненные конфиги для каждой локации ===
+    locationStates: {} 
+};
+
+// === НОВОЕ: Конфигурация содержимого локаций ===
+const LOCATION_DATA = {
+    '2_1': { // Локация 2,1 (mapX=2, mapY=1)
+        npcs: [
+            { 
+                class: 'Samura', 
+                spawnZone: 'W', 
+                count: 7, 
+                delay: 10, // Задержка 10 секунд после входа
+                initialState: 'run', 
+                interaction: {} 
+            },
+            { class: 'Character', type: 'bomzh', x: 728, y: 335, state: 'sit', direction: 135, delay: 0, interaction: {} },
+            { class: 'Puta', type: 'puta', x: 553, y: 272, state: 'stay', direction: 45, delay: 0, interaction: {} }
+        ]
+    },
+    '2_2': { // Локация 2,2 (mapX=2, mapY=2)
+        npcs: [
+            { 
+                class: 'BigBandit', 
+                spawnZone: 'N', 
+                count: 5, 
+                delay: 10, // Задержка 10 секунд после входа
+                initialState: 'run', 
+                interaction: {} 
+            },
+            { class: 'Diler', type: 'diler', x: 292, y: 418, state: 'stay', direction: 315, delay: 0, interaction: {} }
+        ]
+    }
+    // Остальные локации можно добавлять сюда по мере необходимости
 };
 
 // Маппинг игровых направлений на ключи спрайтов в ATLAS_DATA
