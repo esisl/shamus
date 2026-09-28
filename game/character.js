@@ -44,15 +44,15 @@ class Character {
         this.targetX = null;
         this.targetY = null;
         this.isMoving = false;
-
-        // === Статус жизни NPC ===
-        // 'alive' — живой, препятствие
-        // 'dying' — проигрывается анимация die
-        // 'dead' — совсем умер, не препятствие, рисуется последний кадр die
-        this.status = 'alive';
         
-        // Радиус для коллизий (половина ширины bounding box)
-        this.collisionRadius = 20;
+        this.status = 'alive';
+        this.collisionRadius = 100;
+        
+        // === Умный обход препятствий ===
+        this.obstacleTimer = 0;
+        this.slideDirection = 0;  // 0=нет, 1=влево, -1=вправо
+        this.ignoreNPCCollisions = false;  // Флаг для Diler и подобных
+        this.movingAnimation = 'walk';  // Анимация при движении (можно переопределить на 'run')
     }
 
     // Запуск смерти
@@ -107,14 +107,14 @@ class Character {
         this.targetX = x;
         this.targetY = y;
         this.isMoving = true;
+        this.obstacleTimer = 0;
+        this.slideDirection = 0;
     }
     
-    // Базовое обновление движения и анимации
+    // Базовое обновление движения и анимации с умным обходом препятствий
     updateMovement() {
         if (!this.isMoving) {
             this.state = 'stay';
-            
-            // === АНИМАЦИЯ STAY ===
             this.animCounter++;
             if (this.animCounter >= this.animSpeed) {
                 const frameCount = getFrameCount(this.type, 'stay');
@@ -137,6 +137,8 @@ class Character {
             this.state = 'stay';
             this.frame = 0;
             this.animCounter = 0;
+            this.obstacleTimer = 0;
+            this.slideDirection = 0;
             return;
         }
         
@@ -146,25 +148,78 @@ class Character {
         const nextX = this.x + normalizedDx * this.speed;
         const nextY = this.y + normalizedDy * this.speed;
         
-        // Проверка проходимости
-        if (!isWalkable(nextX, nextY, this.mapX, this.mapY)) {
-            this.isMoving = false;
-            this.state = 'stay';
-            this.frame = 0;
-            this.animCounter = 0;
-            return;
+        // Проверка проходимости и коллизий
+        const walkable = isWalkable(nextX, nextY, this.mapX, this.mapY);
+        const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
+        
+        if (walkable && !collides) {
+            // Путь свободен
+            this.x = nextX;
+            this.y = nextY;
+            this.obstacleTimer = 0;
+            this.slideDirection = 0;
+        } else {
+            // === ПРЕПЯТСТВИЕ: включаем режим скольжения ===
+            this.obstacleTimer++;
+            
+            if (this.obstacleTimer > 5) {
+                // Выбираем направление скольжения, если ещё не выбрали
+                if (this.slideDirection === 0) {
+                    // Перпендикулярные векторы
+                    const perpX = -normalizedDy;
+                    const perpY = normalizedDx;
+                    const slideDist = 30;
+                    
+                    const leftX = this.x + perpX * slideDist;
+                    const leftY = this.y + perpY * slideDist;
+                    const rightX = this.x - perpX * slideDist;
+                    const rightY = this.y - perpY * slideDist;
+                    
+                    const leftOk = isWalkable(leftX, leftY, this.mapX, this.mapY) && !collidesWithNPC(leftX, leftY, this.mapX, this.mapY, this);
+                    const rightOk = isWalkable(rightX, rightY, this.mapX, this.mapY) && !collidesWithNPC(rightX, rightY, this.mapX, this.mapY, this);
+                    
+                    if (leftOk && !rightOk) {
+                        this.slideDirection = 1; // Влево
+                    } else if (rightOk && !leftOk) {
+                        this.slideDirection = -1; // Вправо
+                    } else if (leftOk && rightOk) {
+                        this.slideDirection = Math.random() < 0.5 ? 1 : -1; // Случайно, если обе свободны
+                    } else {
+                        // Обе стороны заблокированы — стоим
+                        this.slideDirection = 0;
+                        this.obstacleTimer = 0;
+                    }
+                }
+                
+                // Двигаемся в сторону скольжения
+                if (this.slideDirection !== 0) {
+                    const perpX = -normalizedDy * this.slideDirection;
+                    const perpY = normalizedDx * this.slideDirection;
+                    
+                    const slideX = this.x + perpX * this.speed;
+                    const slideY = this.y + perpY * this.speed;
+                    
+                    if (isWalkable(slideX, slideY, this.mapX, this.mapY) && !collidesWithNPC(slideX, slideY, this.mapX, this.mapY, this)) {
+                        this.x = slideX;
+                        this.y = slideY;
+                    } else {
+                        // Скольжение заблокировано — сбрасываем
+                        this.slideDirection = 0;
+                        this.obstacleTimer = 0;
+                    }
+                }
+            }
         }
         
-        this.x = nextX;
-        this.y = nextY;
-        
+        // Обновляем направление
         this.direction = getDirectionFromVector(normalizedDx, normalizedDy);
         
-        // Анимация
-        this.state = 'walk';
+        // Анимация движения (по умолчанию 'walk', но можно переопределить в наследниках)
+        const animName = this.movingAnimation || 'walk';
+        this.state = animName;
         this.animCounter++;
         if (this.animCounter >= this.animSpeed) {
-            const frameCount = getFrameCount(this.type, 'walk');
+            const frameCount = getFrameCount(this.type, animName);
             if (frameCount > 0) {
                 this.frame = (this.frame + 1) % frameCount;
             }

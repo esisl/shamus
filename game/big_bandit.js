@@ -16,6 +16,8 @@ class BigBandit extends Character {
         
         // Для обхода препятствий
         this.obstacleTimer = 0;
+        // === Указываем базовому классу использовать анимацию 'run' при движении ===
+        this.movingAnimation = 'run';
     }
     
     // Вычисляет дистанцию fight из размера спрайта
@@ -25,7 +27,6 @@ class BigBandit extends Character {
     }
     
     update() {
-        // Если умирает — стандартная логика смерти
         if (this.status === 'dying' || this.status === 'dead') {
             super.update();
             return;
@@ -34,38 +35,30 @@ class BigBandit extends Character {
         const player = gameContext.player;
         if (!player) return;
         
-        // Проверяем, в той ли локации игрок
         const sameLocation = player.mapX === this.mapX && player.mapY === this.mapY;
-        
         if (!sameLocation) {
-            // Игрок в другой локации — стоим
             this.mode = 'idle';
             this.state = 'stay';
             this.isMoving = false;
             return;
         }
         
-        // Расстояние до игрока
         const dx = player.x - this.x;
         const dy = player.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         // === Переключение режимов ===
         if (distance <= this.fightDistance) {
-            // Приблизились — переходим в fight
             if (this.mode !== 'fight') {
                 this.mode = 'fight';
-                this.isMoving = false;
+                this.isMoving = false; // Останавливаем движение при переходе в бой
                 this.state = 'fight';
                 this.frame = 0;
                 this.animCounter = 0;
-                console.log(`Бандит перешел в режим fight`);
             }
         } else {
-            // Далеко — бежим к герою
             if (this.mode !== 'chase') {
                 this.mode = 'chase';
-                this.state = 'run';
             }
         }
         
@@ -73,87 +66,20 @@ class BigBandit extends Character {
         if (this.mode === 'fight') {
             this.updateFight();
         } else if (this.mode === 'chase') {
-            this.updateChase();
+            // === ГЛАВНОЕ ИСПРАВЛЕНИЕ ===
+            // 1. Говорим базовому классу, куда бежать
+            this.moveTo(player.x, player.y);
+            // 2. Запускаем базовую логику, которая сама умеет обходить стены
+            this.updateMovement();
         } else {
             this.updateMovement();
         }
     }
     
-    // Обновление в режиме fight
     updateFight() {
-        // Циклическая анимация fight
         this.animCounter++;
         if (this.animCounter >= this.animSpeed) {
             const frameCount = getFrameCount(this.type, 'fight');
-            if (frameCount > 0) {
-                this.frame = (this.frame + 1) % frameCount;
-            }
-            this.animCounter = 0;
-        }
-    }
-    
-    // Обновление в режиме chase (бег к герою)
-    updateChase() {
-        const player = gameContext.player;
-        if (!player) return;
-        
-        // Цель — позиция игрока
-        this.targetX = player.x;
-        this.targetY = player.y;
-        
-        const dx = this.targetX - this.x;
-        const dy = this.targetY - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        if (distance <= this.speed) {
-            // Дошли до цели
-            this.x = this.targetX;
-            this.y = this.targetY;
-            this.isMoving = false;
-            return;
-        }
-        
-        const normalizedDx = dx / distance;
-        const normalizedDy = dy / distance;
-        
-        const nextX = this.x + normalizedDx * this.speed;
-        const nextY = this.y + normalizedDy * this.speed;
-        
-        // Проверка проходимости
-        const walkable = isWalkable(nextX, nextY, this.mapX, this.mapY);
-        
-        // Проверка коллизии с другими NPC
-        const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
-        
-        if (walkable && !collides) {
-            // Путь свободен — двигаемся
-            this.x = nextX;
-            this.y = nextY;
-            this.obstacleTimer = 0;  // Сбрасываем таймер препятствия
-        } else {
-            // Препятствие — пытаемся обходить
-            this.obstacleTimer++;
-            
-            if (this.obstacleTimer > 10) {
-                // Препятствие слишком долго — сдвигаем цель в сторону
-                const offsetAngle = (Math.random() - 0.5) * Math.PI;  // Случайный угол
-                const offsetDist = 50;
-                
-                this.targetX = player.x + Math.cos(offsetAngle) * offsetDist;
-                this.targetY = player.y + Math.sin(offsetAngle) * offsetDist;
-                
-                this.obstacleTimer = 0;
-            }
-        }
-        
-        // Обновляем направление
-        this.direction = getDirectionFromVector(normalizedDx, normalizedDy);
-        
-        // Анимация бега
-        this.state = 'run';
-        this.animCounter++;
-        if (this.animCounter >= this.animSpeed) {
-            const frameCount = getFrameCount(this.type, 'run');
             if (frameCount > 0) {
                 this.frame = (this.frame + 1) % frameCount;
             }
