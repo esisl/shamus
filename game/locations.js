@@ -1,6 +1,7 @@
 const LOCATIONS = {
 	"E":{
   "room_type": "E",
+  "unstuck":{"x":1100, "y":590},
   "zones": [
     {
       "type": "walk",
@@ -64,6 +65,7 @@ const LOCATIONS = {
 },
 "ES":{
   "room_type": "ES",
+  "unstuck":{"x":860, "y":590},
   "zones": [
     {
       "type": "walk",
@@ -188,6 +190,7 @@ const LOCATIONS = {
 },
 "N":{
   "room_type": "N",
+  "unstuck":{"x":1080, "y":750},
   "zones": [
     {
       "type": "walk",
@@ -283,6 +286,7 @@ const LOCATIONS = {
 },
 "NE":{
   "room_type": "NE",
+  "unstuck":{"x":520, "y":520},
   "zones": [
     {
       "type": "walk",
@@ -379,6 +383,7 @@ const LOCATIONS = {
 },
 "NES":{
   "room_type": "NES",
+  "unstuck":{"x":680, "y":480},
   "zones": [
     {
       "type": "walk",
@@ -524,6 +529,7 @@ const LOCATIONS = {
 },
 "NESW":{
   "room_type": "NESW",
+  "unstuck":{"x":630, "y":400},
   "zones": [
     {
       "type": "walk",
@@ -754,6 +760,7 @@ const LOCATIONS = {
 },
 "NS":{
   "room_type": "NS",
+  "unstuck":{"x":550, "y":500},
   "zones": [
     {
       "type": "walk",
@@ -854,6 +861,7 @@ const LOCATIONS = {
 },
 "NWS":{
   "room_type": "NWS",
+  "unstuck":{"x":600, "y":460},
   "zones": [
     {
       "type": "walk",
@@ -1003,6 +1011,7 @@ const LOCATIONS = {
 },
 "S":{
   "room_type": "S",
+  "unstuck":{"x":850, "y":600},
   "zones": [
     {
       "type": "walk",
@@ -1078,6 +1087,7 @@ const LOCATIONS = {
 },
 "W":{
   "room_type": "W",
+  "unstuck":{"x":650, "y":530},
   "zones": [
     {
       "type": "walk",
@@ -1157,6 +1167,7 @@ const LOCATIONS = {
 },
 "WE":{
   "room_type": "WE",
+  "unstuck":{"x":670, "y":300},
   "zones": [
     {
       "type": "walk",
@@ -1257,6 +1268,7 @@ const LOCATIONS = {
 },
 "WES":{
   "room_type": "WES",
+  "unstuck":{"x":560, "y":530},
   "zones": [
     {
       "type": "walk",
@@ -1390,6 +1402,7 @@ const LOCATIONS = {
 },
 "WN":{
   "room_type": "WN",
+  "unstuck":{"x":600, "y":440},
   "zones": [
     {
       "type": "walk",
@@ -1482,6 +1495,7 @@ const LOCATIONS = {
 },
 "WNE":{
   "room_type": "WNE",
+  "unstuck":{"x":640, "y":470},
   "zones": [
     {
       "type": "walk",
@@ -1647,6 +1661,7 @@ const LOCATIONS = {
 },
 "WS":{
   "room_type": "WS",
+  "unstuck":{"x":600, "y":400},
   "zones": [
     {
       "type": "walk",

@@ -1,29 +1,18 @@
 class BigBandit extends Character {
     constructor(mapX, mapY, x, y) {
-        super('big_bandit', mapX, mapY, x, y, 3.0);  // Скорость бега 3.0
+        super('samura', mapX, mapY, x, y, 3.0);
         
-        this.direction = 180;  // Смотрит на юг (к герою)
+        this.direction = 180;
         this.state = 'stay';
-        
-        // === Режимы поведения ===
-        this.mode = 'idle';  // 'idle', 'chase', 'fight'
-        
-        // Дистанция для перехода в fight (размер спрайта)
+        this.mode = 'idle';
         this.fightDistance = this.calculateFightDistance();
-
-        // === Увеличенный collision radius для бандитов ===
-        this.collisionRadius = 35;  // Было 20, стало 35
-        
-        // Для обхода препятствий
-        this.obstacleTimer = 0;
-        // === Указываем базовому классу использовать анимацию 'run' при движении ===
+        this.collisionRadius = 35;
         this.movingAnimation = 'run';
     }
     
-    // Вычисляет дистанцию fight из размера спрайта
     calculateFightDistance() {
-        const spriteData = getSpriteData('big_bandit', 'fight', 0, 0);
-        return spriteData ? spriteData.w : 100;  // Fallback: 100 пикселей
+        const spriteData = getSpriteData('samura', 'fight', 0, 0);
+        return spriteData ? spriteData.w : 100;
     }
     
     update() {
@@ -47,11 +36,10 @@ class BigBandit extends Character {
         const dy = player.y - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // === Переключение режимов ===
         if (distance <= this.fightDistance) {
             if (this.mode !== 'fight') {
                 this.mode = 'fight';
-                this.isMoving = false; // Останавливаем движение при переходе в бой
+                this.isMoving = false;
                 this.state = 'fight';
                 this.frame = 0;
                 this.animCounter = 0;
@@ -62,14 +50,11 @@ class BigBandit extends Character {
             }
         }
         
-        // === Поведение в зависимости от режима ===
         if (this.mode === 'fight') {
             this.updateFight();
         } else if (this.mode === 'chase') {
-            // === ГЛАВНОЕ ИСПРАВЛЕНИЕ ===
-            // 1. Говорим базовому классу, куда бежать
+            // === ИСПОЛЬЗУЕМ УМНЫЙ БАЗОВЫЙ МЕТОД ===
             this.moveTo(player.x, player.y);
-            // 2. Запускаем базовую логику, которая сама умеет обходить стены
             this.updateMovement();
         } else {
             this.updateMovement();
