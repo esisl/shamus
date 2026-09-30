@@ -43,18 +43,7 @@ class Character {
         this.status = 'alive';
         this.collisionRadius = 20;
         
-        // === Логика обхода препятствий ===
-        this.obstacleTimer = 0;
-        this.slideDirection = 0;
         this.movingAnimation = 'walk';
-
-        // === Логика обнаружения застревания ===
-        this.lastX = x;
-        this.lastY = y;
-        this.stuckTimer = 0;
-        this.isStuck = false;
-        this.originalTargetX = null;
-        this.originalTargetY = null;
     }
 
     kill() {
@@ -102,7 +91,7 @@ class Character {
         this.slideDirection = 0;
     }
 
-    // === УМНОЕ ДВИЖЕНИЕ СО СКОЛЬЖЕНИЕМ И АНТИ-ЗАСТРЕВАНИЕМ ===
+    // Базовое обновление движения — простое и надежное
     updateMovement() {
         if (!this.isMoving) {
             this.state = 'stay';
@@ -121,131 +110,43 @@ class Character {
         const dy = this.targetY - this.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        // === ДОСТИЖЕНИЕ ЦЕЛИ ===
+        // Достигли цели
         if (distance <= this.speed) {
             this.x = this.targetX;
             this.y = this.targetY;
-            
-            // Если это была точка unstuck, возвращаемся к оригинальной цели
-            if (this.isStuck) {
-                this.isStuck = false;
-                this.stuckTimer = 0;
-                this.targetX = this.originalTargetX;
-                this.targetY = this.originalTargetY;
-                this.originalTargetX = null;
-                this.originalTargetY = null;
-                this.isMoving = true;
-                console.log(`NPC ${this.type} достиг unstuck, возвращается к цели`);
-            } else {
-                this.isMoving = false;
-                this.state = 'stay';
-                this.frame = 0;
-                this.animCounter = 0;
-                this.obstacleTimer = 0;
-                this.slideDirection = 0;
-                return;
-            }
-        }
-
-        // === ДЕТЕКЦИЯ ЗАСТРЕВАНИЯ ===
-        const distMoved = Math.sqrt((this.x - this.lastX) ** 2 + (this.y - this.lastY) ** 2);
-        if (distMoved < 0.5) {
-            this.stuckTimer++;
-        } else {
-            this.stuckTimer = 0;
-            this.isStuck = false;
-        }
-        this.lastX = this.x;
-        this.lastY = this.y;
-
-        if (this.stuckTimer > 40 && !this.isStuck) {
-            this.isStuck = true;
-            this.originalTargetX = this.targetX;
-            this.originalTargetY = this.targetY;
-            
-            const locId = gameContext.map[this.mapY][this.mapX];
-            const locationData = LOCATIONS[locId];
-            
-            if (locationData && locationData.unstuck) {
-                this.targetX = locationData.unstuck.x;
-                this.targetY = locationData.unstuck.y;
-                console.log(`NPC ${this.type} застрял! Бежит в unstuck (${this.targetX}, ${this.targetY})`);
-            }
-        }
-
-        // === ПЕРЕСЧЁТ ВЕКТОРА (критически важно после смены цели!) ===
-        const currentDx = this.targetX - this.x;
-        const currentDy = this.targetY - this.y;
-        const currentDist = Math.sqrt(currentDx * currentDx + currentDy * currentDy);
-        
-        if (currentDist <= 0.001) {
             this.isMoving = false;
+            this.state = 'stay';
+            this.frame = 0;
+            this.animCounter = 0;
             return;
         }
-
-        const normalizedDx = currentDx / currentDist;
-        const normalizedDy = currentDy / currentDist;
+        
+        const normalizedDx = dx / distance;
+        const normalizedDy = dy / distance;
         
         const nextX = this.x + normalizedDx * this.speed;
         const nextY = this.y + normalizedDy * this.speed;
         
+        // Проверка проходимости и коллизий
         const walkable = isWalkable(nextX, nextY, this.mapX, this.mapY);
         const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
         
         if (walkable && !collides) {
             this.x = nextX;
             this.y = nextY;
-            this.obstacleTimer = 0;
-            this.slideDirection = 0;
         } else {
-            this.obstacleTimer++;
-            
-            if (this.obstacleTimer > 5) {
-                if (this.slideDirection === 0) {
-                    const perpX = -normalizedDy;
-                    const perpY = normalizedDx;
-                    const slideDist = 30;
-                    
-                    const leftX = this.x + perpX * slideDist;
-                    const leftY = this.y + perpY * slideDist;
-                    const rightX = this.x - perpX * slideDist;
-                    const rightY = this.y - perpY * slideDist;
-                    
-                    const leftOk = isWalkable(leftX, leftY, this.mapX, this.mapY) && !collidesWithNPC(leftX, leftY, this.mapX, this.mapY, this);
-                    const rightOk = isWalkable(rightX, rightY, this.mapX, this.mapY) && !collidesWithNPC(rightX, rightY, this.mapX, this.mapY, this);
-                    
-                    if (leftOk && !rightOk) {
-                        this.slideDirection = 1;
-                    } else if (rightOk && !leftOk) {
-                        this.slideDirection = -1;
-                    } else if (leftOk && rightOk) {
-                        this.slideDirection = Math.random() < 0.5 ? 1 : -1;
-                    } else {
-                        this.slideDirection = 0;
-                        this.obstacleTimer = 0;
-                    }
-                }
-                
-                if (this.slideDirection !== 0) {
-                    const perpX = -normalizedDy * this.slideDirection;
-                    const perpY = normalizedDx * this.slideDirection;
-                    
-                    const slideX = this.x + perpX * this.speed;
-                    const slideY = this.y + perpY * this.speed;
-                    
-                    if (isWalkable(slideX, slideY, this.mapX, this.mapY) && !collidesWithNPC(slideX, slideY, this.mapX, this.mapY, this)) {
-                        this.x = slideX;
-                        this.y = slideY;
-                    } else {
-                        this.slideDirection = 0;
-                        this.obstacleTimer = 0;
-                    }
-                }
-            }
+            // Уперлись — просто останавливаемся
+            // Наследник (Samura) сам решит, что делать дальше
+            this.isMoving = false;
+            this.state = 'stay';
+            this.frame = 0;
+            this.animCounter = 0;
+            return;
         }
         
         this.direction = getDirectionFromVector(normalizedDx, normalizedDy);
         
+        // Анимация движения
         const animName = this.movingAnimation || 'walk';
         this.state = animName;
         this.animCounter++;

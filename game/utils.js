@@ -202,3 +202,67 @@ function segmentIntersectsCircle(x1, y1, x2, y2, cx, cy, radius) {
     
     return false;
 }
+
+// Находит случайную walkable точку в локации
+function findRandomWalkablePoint(mapX, mapY) {
+    const location = getCurrentLocation(mapX, mapY);
+    if (!location || !location.zones) return null;
+    
+    // Собираем все walk зоны
+    const walkZones = location.zones.filter(z => z.type === 'walk' && z.polygon_pixel);
+    if (walkZones.length === 0) return null;
+    
+    // Выбираем случайную зону
+    const zone = walkZones[Math.floor(Math.random() * walkZones.length)];
+    const polygon = zone.polygon_pixel;
+    
+    // Находим bounding box
+    let minX = Infinity, maxX = -Infinity;
+    let minY = Infinity, maxY = -Infinity;
+    
+    for (const p of polygon) {
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+    }
+    
+    // Генерируем точки, пока не попадём в полигон
+    for (let attempt = 0; attempt < 50; attempt++) {
+        const x = minX + Math.random() * (maxX - minX);
+        const y = minY + Math.random() * (maxY - minY);
+        
+        if (pointInPolygon(x, y, polygon)) {
+            return { x, y };
+        }
+    }
+    
+    // Fallback: центр зоны
+    return getZoneCenter(zone);
+}
+
+// Проверяет линию видимости между двумя точками
+// Дискретизирует отрезок и проверяет, что все точки walkable
+function hasLineOfSight(x1, y1, x2, y2, mapX, mapY) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    if (distance < 1) return true;
+    
+    // Шаг дискретизации — 15 пикселей
+    const step = 15;
+    const steps = Math.ceil(distance / step);
+    
+    for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        const x = x1 + dx * t;
+        const y = y1 + dy * t;
+        
+        if (!isWalkable(x, y, mapX, mapY)) {
+            return false;  // Препятствие на линии
+        }
+    }
+    
+    return true;
+}

@@ -98,9 +98,9 @@ class Diler extends Character {
             const zone = getTransitionZone(this.x, this.y, this.mapX, this.mapY);
             if (zone) {
                 // Исчезаем!
+                console.log(`[DEBUG Diler] Дилер ${this.type} исчезает через зону ${zone} в (${this.x.toFixed(0)}, ${this.y.toFixed(0)})`);
                 this.removed = true;
                 this.isFleeing = false;
-                console.log(`Путана исчезла через зону ${zone}`);
                 return;
             }
             

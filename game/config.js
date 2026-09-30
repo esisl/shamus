@@ -38,7 +38,7 @@ const LOCATION_DATA = {
     '2_1': { // Локация 2,1 (mapX=2, mapY=1)
         npcs: [
             { 
-                class: 'Samura', 
+                class: 'BigBandit', 
                 spawnZone: 'W', 
                 count: 7, 
                 delay: 10, // Задержка 10 секунд после входа
@@ -52,7 +52,7 @@ const LOCATION_DATA = {
     '2_2': { // Локация 2,2 (mapX=2, mapY=2)
         npcs: [
             { 
-                class: 'BigBandit', 
+                class: 'Samura', 
                 spawnZone: 'N', 
                 count: 5, 
                 delay: 10, // Задержка 10 секунд после входа
