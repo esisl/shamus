@@ -1,6 +1,6 @@
 class BigBandit extends Character {
     constructor(mapX, mapY, x, y) {
-        super('samura', mapX, mapY, x, y, 3.0);
+        super('big_bandit', mapX, mapY, x, y, 3.0);
         
         this.direction = 180;
         this.state = 'stay';
@@ -11,7 +11,7 @@ class BigBandit extends Character {
     }
     
     calculateFightDistance() {
-        const spriteData = getSpriteData('samura', 'fight', 0, 0);
+        const spriteData = getSpriteData('big_bandit', 'fight', 0, 0);
         return spriteData ? spriteData.w : 100;
     }
     
@@ -53,7 +53,6 @@ class BigBandit extends Character {
         if (this.mode === 'fight') {
             this.updateFight();
         } else if (this.mode === 'chase') {
-            // === ИСПОЛЬЗУЕМ УМНЫЙ БАЗОВЫЙ МЕТОД ===
             this.moveTo(player.x, player.y);
             this.updateMovement();
         } else {

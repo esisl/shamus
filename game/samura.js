@@ -53,7 +53,6 @@ class Samura extends Character {
         if (this.mode === 'fight') {
             this.updateFight();
         } else if (this.mode === 'chase') {
-            // === ИСПОЛЬЗУЕМ УМНЫЙ БАЗОВЫЙ МЕТОД ===
             this.moveTo(player.x, player.y);
             this.updateMovement();
         } else {

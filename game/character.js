@@ -135,7 +135,7 @@ class Character {
                 this.originalTargetX = null;
                 this.originalTargetY = null;
                 this.isMoving = true;
-                // НЕ делаем return — продолжаем движение к новой цели в этом же кадре
+                console.log(`NPC ${this.type} достиг unstuck, возвращается к цели`);
             } else {
                 this.isMoving = false;
                 this.state = 'stay';
@@ -173,27 +173,11 @@ class Character {
             }
         }
 
-        // === ПРОВЕРКА ДОСТИЖЕНИЯ UNSTUCK ===
-        if (this.isStuck) {
-            const distToUnstuck = Math.sqrt((this.targetX - this.x) ** 2 + (this.targetY - this.y) ** 2);
-            
-            // Если достигли unstuck точки (расстояние <= 50)
-            if (distToUnstuck <= 50) {
-                this.isStuck = false;
-                this.stuckTimer = 0;
-                this.targetX = this.originalTargetX;
-                this.targetY = this.originalTargetY;
-                this.originalTargetX = null;
-                this.originalTargetY = null;
-                console.log(`NPC ${this.type} достиг unstuck, возвращается к цели`);
-            }
-        }
-
-        // === ПЕРЕСЧЁТ ВЕКТОРА (критически важно!) ===
+        // === ПЕРЕСЧЁТ ВЕКТОРА (критически важно после смены цели!) ===
         const currentDx = this.targetX - this.x;
         const currentDy = this.targetY - this.y;
         const currentDist = Math.sqrt(currentDx * currentDx + currentDy * currentDy);
-
+        
         if (currentDist <= 0.001) {
             this.isMoving = false;
             return;
@@ -201,7 +185,7 @@ class Character {
 
         const normalizedDx = currentDx / currentDist;
         const normalizedDy = currentDy / currentDist;
-
+        
         const nextX = this.x + normalizedDx * this.speed;
         const nextY = this.y + normalizedDy * this.speed;
         
@@ -209,13 +193,11 @@ class Character {
         const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
         
         if (walkable && !collides) {
-            // Путь свободен
             this.x = nextX;
             this.y = nextY;
             this.obstacleTimer = 0;
             this.slideDirection = 0;
         } else {
-            // === ПРЕПЯТСТВИЕ: скольжение ===
             this.obstacleTimer++;
             
             if (this.obstacleTimer > 5) {
