@@ -266,7 +266,9 @@ function renderGameplay() {
     
     drawables.forEach(item => item.obj.draw(ctx));
     
+    ctx.globalAlpha = 0.5;
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
     
     ctx.fillStyle = '#0ff';
     ctx.font = '14px monospace';

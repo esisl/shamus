@@ -266,3 +266,68 @@ function hasLineOfSight(x1, y1, x2, y2, mapX, mapY) {
     
     return true;
 }
+
+// Разделяет NPC, если они находятся слишком близко друг к другу
+function separateNPCs(npc) {
+    if (npc.status !== 'alive') return;
+    
+    for (const other of gameContext.npcs) {
+        if (other === npc) continue;
+        if (other.mapX !== npc.mapX || other.mapY !== npc.mapY) continue;
+        if (other.status !== 'alive') continue;
+        if (other.removed) continue;
+        
+        const dx = npc.x - other.x;
+        const dy = npc.y - other.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const minDistance = npc.collisionRadius + other.collisionRadius;
+        
+        if (distance < minDistance && distance > 0) {
+            // NPC слишком близко — раздвигаем их
+            const overlap = (minDistance - distance) / 2;
+            const normalizedDx = dx / distance;
+            const normalizedDy = dy / distance;
+            
+            npc.x += normalizedDx * overlap;
+            npc.y += normalizedDy * overlap;
+            other.x -= normalizedDx * overlap;
+            other.y -= normalizedDy * overlap;
+        }
+    }
+}
+
+// Находит ближайшую walkable точку к заданным координатам
+function findNearestWalkablePoint(startX, startY, mapX, mapY) {
+    // 1. Сначала проверим текущую точку (вдруг она уже валидна)
+    if (isWalkable(startX, startY, mapX, mapY)) {
+        return { x: startX, y: startY };
+    }
+
+    // 2. Поиск по расширяющимся кольцам (радиус от 1 до 60 пикселей)
+    const maxRadius = 60;
+    const stepAngle = Math.PI / 8; // 22.5 градуса (16 точек проверки на каждом кольце)
+
+    for (let r = 1; r <= maxRadius; r += 2) { // шаг радиуса 2 пикселя для баланса скорости и точности
+        for (let angle = 0; angle < Math.PI * 2; angle += stepAngle) {
+            const checkX = startX + Math.cos(angle) * r;
+            const checkY = startY + Math.sin(angle) * r;
+
+            if (isWalkable(checkX, checkY, mapX, mapY)) {
+                return { x: checkX, y: checkY }; // Нашли ближайшую точку!
+            }
+        }
+    }
+
+    // 3. Fallback: если в радиусе 60 пикселей ничего не нашли (крайне редкий случай), 
+    // возвращаем центр зоны, как делали раньше
+    const location = getCurrentLocation(mapX, mapY);
+    if (location && location.zones) {
+        const walkZone = location.zones.find(z => z.type === 'walk' && z.polygon_pixel);
+        if (walkZone) {
+            return getZoneCenter(walkZone);
+        }
+    }
+
+    // 4. Полный fallback: остаемся на месте
+    return { x: startX, y: startY };
+}

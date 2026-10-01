@@ -4,6 +4,7 @@ class Samura extends Character {
         
         this.direction = 180;
         this.state = 'stay';
+        this.mode = 'idle';
         
         // === Режимы: 'wander', 'chase', 'fight' ===
         this.mode = 'wander';
@@ -22,6 +23,7 @@ class Samura extends Character {
         
         // Анимация бега
         this.movingAnimation = 'run';
+        this.idleAnimation = 'run';
     }
     
     calculateFightDistance() {

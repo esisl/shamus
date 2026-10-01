@@ -44,6 +44,7 @@ class Character {
         this.collisionRadius = 20;
         
         this.movingAnimation = 'walk';
+        this.idleAnimation = 'stay'; 
     }
 
     kill() {
@@ -94,10 +95,10 @@ class Character {
     // Базовое обновление движения — простое и надежное
     updateMovement() {
         if (!this.isMoving) {
-            this.state = 'stay';
+            this.state = this.idleAnimation;
             this.animCounter++;
             if (this.animCounter >= this.animSpeed) {
-                const frameCount = getFrameCount(this.type, 'stay');
+                const frameCount = getFrameCount(this.type, this.idleAnimation);
                 if (frameCount > 0) {
                     this.frame = (this.frame + 1) % frameCount;
                 }
@@ -115,34 +116,92 @@ class Character {
             this.x = this.targetX;
             this.y = this.targetY;
             this.isMoving = false;
-            this.state = 'stay';
+            this.state = this.idleAnimation;
             this.frame = 0;
             this.animCounter = 0;
             return;
         }
         
-        const normalizedDx = dx / distance;
-        const normalizedDy = dy / distance;
-        
-        const nextX = this.x + normalizedDx * this.speed;
-        const nextY = this.y + normalizedDy * this.speed;
-        
-        // Проверка проходимости и коллизий
-        const walkable = isWalkable(nextX, nextY, this.mapX, this.mapY);
-        const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
-        
-        if (walkable && !collides) {
-            this.x = nextX;
-            this.y = nextY;
-        } else {
-            // Уперлись — просто останавливаемся
-            // Наследник (Samura) сам решит, что делать дальше
-            this.isMoving = false;
-            this.state = 'stay';
-            this.frame = 0;
-            this.animCounter = 0;
-            return;
-        }
+            const normalizedDx = dx / distance;
+            const normalizedDy = dy / distance;
+            
+            const nextX = this.x + normalizedDx * this.speed;
+            const nextY = this.y + normalizedDy * this.speed;
+            
+            // Проверка проходимости и коллизий
+            const walkable = isWalkable(nextX, nextY, this.mapX, this.mapY);
+            const collides = collidesWithNPC(nextX, nextY, this.mapX, this.mapY, this);
+            
+            if (walkable && !collides) {
+                // Путь свободен
+                this.x = nextX;
+                this.y = nextY;
+                this.obstacleTimer = 0;
+                this.slideDirection = 0;
+            } else {
+                // === ПРЕПЯТСТВИЕ: включаем режим скольжения ===
+                this.obstacleTimer++;
+                
+                if (this.obstacleTimer > 5) {
+                    if (this.slideDirection === 0) {
+                        const perpX = -normalizedDy;
+                        const perpY = normalizedDx;
+                        const slideDist = 30;
+                        
+                        const leftX = this.x + perpX * slideDist;
+                        const leftY = this.y + perpY * slideDist;
+                        const rightX = this.x - perpX * slideDist;
+                        const rightY = this.y - perpY * slideDist;
+                        
+                        const leftOk = isWalkable(leftX, leftY, this.mapX, this.mapY) && !collidesWithNPC(leftX, leftY, this.mapX, this.mapY, this);
+                        const rightOk = isWalkable(rightX, rightY, this.mapX, this.mapY) && !collidesWithNPC(rightX, rightY, this.mapX, this.mapY, this);
+                        
+                        if (leftOk && !rightOk) {
+                            this.slideDirection = 1;
+                        } else if (rightOk && !leftOk) {
+                            this.slideDirection = -1;
+                        } else if (leftOk && rightOk) {
+                            this.slideDirection = Math.random() < 0.5 ? 1 : -1;
+                        } else {
+                            this.slideDirection = 0;
+                            this.obstacleTimer = 0;
+                        }
+                    }
+                    
+                    if (this.slideDirection !== 0) {
+                        const perpX = -normalizedDy * this.slideDirection;
+                        const perpY = normalizedDx * this.slideDirection;
+                        
+                        const slideX = this.x + perpX * this.speed;
+                        const slideY = this.y + perpY * this.speed;
+                        
+                        if (isWalkable(slideX, slideY, this.mapX, this.mapY) && !collidesWithNPC(slideX, slideY, this.mapX, this.mapY, this)) {
+                            this.x = slideX;
+                            this.y = slideY;
+                        } else {
+                            this.slideDirection = 0;
+                            this.obstacleTimer = 0;
+                        }
+                    }
+                }
+            }
+            
+            // === НОВОЕ: Разделяем NPC, если они слишком близко ===
+            separateNPCs(this);
+            
+            // === ПРОВЕРКА: не вышел ли NPC за пределы полигона ===
+            if (!isWalkable(this.x, this.y, this.mapX, this.mapY)) {
+                console.warn(`[WARNING] NPC ${this.type} вышел за пределы полигона! Возвращаем в ближайшую точку.`);
+                
+                // Используем новую функцию для плавного возврата
+                const safePoint = findNearestWalkablePoint(this.x, this.y, this.mapX, this.mapY);
+                this.x = safePoint.x;
+                this.y = safePoint.y;
+                
+                // Сбрасываем вектор движения, чтобы NPC не пытался сразу же шагнуть обратно за границу
+                this.obstacleTimer = 0;
+                this.slideDirection = 0;
+            }
         
         this.direction = getDirectionFromVector(normalizedDx, normalizedDy);
         
@@ -159,22 +218,31 @@ class Character {
         }
     }
 
+    // Отрисовка персонажа
     draw(ctx) {
         if (!resources.atlas) return;
+        
         const drawState = this.status === 'dead' ? 'die' : this.state;
         const drawFrame = this.status === 'dead' 
             ? Math.max(0, getFrameCount(this.type, 'die') - 1) 
             : this.frame;
+        
         const spriteData = getSpriteData(this.type, drawState, this.direction, drawFrame);
-        if (spriteData) {
-            const drawX = this.x - spriteData.w / 2;
-            const drawY = this.y - spriteData.h;
-            ctx.drawImage(
-                resources.atlas,
-                spriteData.x, spriteData.y, spriteData.w, spriteData.h,
-                drawX, drawY,
-                spriteData.w, spriteData.h
-            );
+        
+        // === ОТЛАДКА: Если спрайт не найден, выводим точную причину ===
+        if (!spriteData) {
+            console.warn(`[SPRITE MISSING] Тип: ${this.type}, Состояние: '${drawState}', Направление: ${this.direction}, Кадр: ${drawFrame}`);
+            return; // Не рисуем ничего, если данных нет (это и есть причина исчезновения)
         }
+        
+        const drawX = this.x - spriteData.w / 2;
+        const drawY = this.y - spriteData.h;
+        
+        ctx.drawImage(
+            resources.atlas,
+            spriteData.x, spriteData.y, spriteData.w, spriteData.h,
+            drawX, drawY,
+            spriteData.w, spriteData.h
+        );
     }
 }
