@@ -25,12 +25,21 @@ const gameContext = {
     npcs: [],
     bullets: [],  // === МАССИВ ПУЛЬ ===
 
+    // === Дрон и его пули ===
+    dron: null,
+    dronBullets: [],
+
     // Текущее состояние
     currentState: STATE.MENU,
     currentLanguage: 'ru',
 
     // === НОВОЕ: Хранит время входа и заспавненные конфиги для каждой локации ===
-    locationStates: {} 
+    locationStates: {},
+
+    // === НОВОЕ: Состояние таймера обратного отсчета ===
+    countdownActive: false,
+    countdownDuration: 10, // Длительность в секундах
+    countdownStartTime: 0  // Timestamp начала отсчета
 };
 
 // === НОВОЕ: Конфигурация содержимого локаций ===

@@ -189,6 +189,16 @@ function gameLoop() {
 
 function update() {
     if (gameContext.currentState === STATE.GAMEPLAY) {
+        // === ОБНОВЛЕНИЕ ТАЙМЕРА ===
+        if (gameContext.countdownActive) {
+            const elapsed = (Date.now() - gameContext.countdownStartTime) / 1000;
+            const remaining = gameContext.countdownDuration - elapsed;
+            if (remaining <= 0) {
+                gameContext.countdownActive = false;
+                onCountdownFinished();
+            }
+        }
+
         if (gameContext.player) {
             gameContext.player.update();
             
@@ -223,9 +233,24 @@ function update() {
             console.log(`Удалено NPC: ${before - gameContext.npcs.length}`);
         }
         
+        // === НОВОЕ: Обновление дрона и его пуль ===
+        if (gameContext.dron) {
+            gameContext.dron.update();
+        }
         // === Обновление пуль ===
         gameContext.bullets.forEach(bullet => bullet.update());
         gameContext.bullets = gameContext.bullets.filter(b => b.alive);
+
+        // === Обновление пуль ===
+        gameContext.bullets.forEach(bullet => bullet.update());
+        gameContext.bullets = gameContext.bullets.filter(b => b.alive);
+        
+        // === НОВОЕ: Обновление дрона и его пуль ===
+        if (gameContext.dron) {
+            gameContext.dron.update();
+        }
+        gameContext.dronBullets.forEach(bullet => bullet.update());
+        gameContext.dronBullets = gameContext.dronBullets.filter(b => b.alive);
     }
 }
 
@@ -269,6 +294,25 @@ function renderGameplay() {
     ctx.globalAlpha = 0.5;
     ctx.drawImage(resources.front, 0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 1;
+
+    // 7. === НОВОЕ: Дрон и его пули (ПОВЕРХ всего) ===
+    if (gameContext.dron) {
+        gameContext.dron.draw(ctx);
+    }
+    // === ОТЛАДКА ОТРИСОВКИ ПУЛЬ ДРОНА ===
+    if (!gameContext.dronBullets || gameContext.dronBullets.length === 0) {
+        console.log("[DEBUG RENDER] Массив пуль дрона пуст.");
+    } else {
+        console.log(`[DEBUG RENDER] В массиве пуль дрона ${gameContext.dronBullets.length} шт.`);
+        
+        gameContext.dronBullets.forEach((bullet, index) => {            
+            if (bullet.alive) {
+                bullet.draw(ctx);
+            } else {
+                console.warn(`[DEBUG RENDER] Пуля #${index} пропущена: alive=false`);
+            }
+        });
+    }
     
     ctx.fillStyle = '#0ff';
     ctx.font = '14px monospace';
@@ -278,6 +322,27 @@ function renderGameplay() {
     ctx.fillText(`На карте: (${gameContext.player.mapX}, ${gameContext.player.mapY})`, 10, 60);
     ctx.fillText(`Пуль: ${gameContext.bullets.length}`, 10, 80);
     ctx.fillText(`NPC: ${gameContext.npcs.length}`, 10, 100);
+
+    // === НОВОЕ: Отрисовка таймера (правый верхний угол) ===
+    if (gameContext.countdownActive) {
+        const elapsed = (Date.now() - gameContext.countdownStartTime) / 1000;
+        const remaining = Math.max(0, Math.ceil(gameContext.countdownDuration - elapsed));
+        
+        ctx.fillStyle = '#ff3333'; // Красный цвет для привлечения внимания
+        ctx.font = 'bold 24px monospace';
+        ctx.textAlign = 'right'; // Выравнивание по правому краю
+        
+        // Рисуем текст с небольшим отступом от правого края (canvas.width - 20)
+        ctx.fillText(`ВРЕМЯ: ${remaining}с`, canvas.width - 20, 40);
+        
+        ctx.textAlign = 'left'; // Возвращаем стандартное выравнивание
+    }
+}
+
+// === ЗАГЛУШКА: Срабатывает по окончании таймера ===
+function onCountdownFinished() {
+    console.log("⏰ ТАЙМЕР ЗАВЕРШЕН! Прилетает дрон!");
+    gameContext.dron = new PoliceDron();
 }
 
 // --- Запуск ---

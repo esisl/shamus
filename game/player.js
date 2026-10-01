@@ -21,6 +21,13 @@ class Player extends Character {
     shoot(clickX, clickY) {
         if (this.isMoving || this.isTransitioning || this.isShooting) return;
         
+        // === НОВОЕ: Запуск таймера при первом выстреле ===
+        if (!gameContext.countdownActive) {
+            gameContext.countdownActive = true;
+            gameContext.countdownStartTime = Date.now();
+            console.log("⏱️ Таймер обратного отсчета запущен!");
+        }
+
         // 1. Поворачиваем героя (для анимации спрайта)
         const dx = clickX - this.x;
         const dy = clickY - this.y;
@@ -142,6 +149,24 @@ class Player extends Character {
 
     // Переопределяем update — добавляем логику переходов
     update() {
+        // === БЛОКИРОВКА УПРАВЛЕНИЯ ПРИ СМЕРТИ ===
+        if (this.status === 'dying' || this.status === 'dead') {
+            // Проигрываем анимацию die
+            this.animCounter++;
+            if (this.animCounter >= this.animSpeed) {
+                const frameCount = getFrameCount(this.type, 'die');
+                if (frameCount > 0) {
+                    this.frame++;
+                    if (this.frame >= frameCount) {
+                        this.frame = frameCount - 1;
+                        this.status = 'dead';
+                    }
+                }
+                this.animCounter = 0;
+            }
+            return;  // Никаких движений, стрельбы, переходов
+        }
+
         if (this.isTransitioning) return;
         
         // === Обработка стрельбы ===
@@ -198,6 +223,15 @@ class Player extends Character {
 
     // Выполняет переход в новую локацию
     transitionTo(direction) {
+        // === СБРОС ТАЙМЕРА ПРИ ПЕРЕХОДЕ ===
+        gameContext.countdownActive = false;
+        console.log(`⏱️ Таймер сброшен при переходе в новую локацию`);
+
+        // === СБРОС ДРОНА ПРИ ПЕРЕХОДЕ ===
+        gameContext.dron = null;
+        gameContext.dronBullets = [];
+        console.log(`🚁 Дрон исчез при переходе в новую локацию`);
+
         this.isTransitioning = true;
         this.isMoving = false;
         this.state = 'stay';
