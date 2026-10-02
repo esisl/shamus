@@ -24,11 +24,20 @@ class Samura extends Character {
         // Анимация бега
         this.movingAnimation = 'run';
         this.idleAnimation = 'run';
+
+        // === НОВОЕ: Атакует героя после 3 циклов анимации fight ===
+        this.attackCycles = 3;
+        this.fightFramesCounted = 0;
     }
     
+    // Вычисляет дистанцию fight из размера спрайта
     calculateFightDistance() {
         const spriteData = getSpriteData('samura', 'fight', 0, 0);
-        return spriteData ? spriteData.w : 100;
+        const spriteWidth = spriteData ? spriteData.w : 100;
+        
+        // === Увеличиваем дистанцию в 2 раза ===
+        // Это даст самураям больше пространства для входа в режим fight
+        return spriteWidth * 2;  // Было: spriteWidth, стало: spriteWidth * 2
     }
     
     update() {
@@ -42,10 +51,10 @@ class Samura extends Character {
         
         const sameLocation = player.mapX === this.mapX && player.mapY === this.mapY;
         if (!sameLocation) {
-            // Игрок в другой локации — просто стоим
-            this.mode = 'wander';
-            this.isMoving = false;
+            this.mode = 'idle';
             this.state = 'stay';
+            this.isMoving = false;
+            this.fightFramesCounted = 0;  // === СБРОС СЧЁТЧИКА ===
             return;
         }
         
@@ -54,8 +63,6 @@ class Samura extends Character {
         const distance = Math.sqrt(dx * dx + dy * dy);
         
         // === Переключение режимов ===
-        
-        // 1. Близко к герою — fight
         if (distance <= this.fightDistance) {
             if (this.mode !== 'fight') {
                 this.mode = 'fight';
@@ -63,25 +70,47 @@ class Samura extends Character {
                 this.state = 'fight';
                 this.frame = 0;
                 this.animCounter = 0;
+                this.fightFramesCounted = 0;  // === СБРОС ПРИ ВХОДЕ В FIGHT ===
             }
-        }
-        // 2. Видим героя — chase
-        else if (this.mode !== 'chase' && this.canSeePlayer(player)) {
-            this.mode = 'chase';
-        }
-        // 3. В режиме chase, но потеряли из виду — возвращаемся в wander
-        else if (this.mode === 'chase' && !this.canSeePlayer(player)) {
-            this.mode = 'wander';
-            this.wanderTarget = null;  // Выберем новую точку
+        } else {
+            if (this.mode !== 'chase') {
+                this.mode = 'chase';
+                this.fightFramesCounted = 0;  // === СБРОС ПРИ ВЫХОДЕ ИЗ FIGHT ===
+            }
         }
         
         // === Поведение ===
         if (this.mode === 'fight') {
             this.updateFight();
+            
+            // === ЛОГИКА АТАКИ ГЕРОЯ ===
+            if (this.attackCycles > 0 && player.status === 'alive') {
+                this.fightFramesCounted++;
+                const frameCount = getFrameCount(this.type, 'fight');
+                const threshold = this.attackCycles * frameCount;
+                
+                if (frameCount > 0 && this.fightFramesCounted >= threshold) {
+                    player.kill();
+                    console.log(`💀 ${this.type} убил героя в ближнем бою!`);
+                    this.fightFramesCounted = 0;  // Сброс, чтобы не спамить
+                }
+            }
         } else if (this.mode === 'chase') {
-            this.updateChase(player);
+            this.moveTo(player.x, player.y);
+            this.updateMovement();
         } else {
-            this.updateWander();
+            this.updateMovement();
+        }
+    }
+
+    updateFight() {
+        this.animCounter++;
+        if (this.animCounter >= this.animSpeed) {
+            const frameCount = getFrameCount(this.type, 'fight');
+            if (frameCount > 0) {
+                this.frame = (this.frame + 1) % frameCount;
+            }
+            this.animCounter = 0;
         }
     }
     

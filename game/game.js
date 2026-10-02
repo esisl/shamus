@@ -14,6 +14,7 @@ function createNPCInstance(className, type, mapX, mapY, x, y) {
         case 'Diler': return new Diler(type, mapX, mapY, x, y);
         case 'Samura': return new Samura(mapX, mapY, x, y);
         case 'BigBandit': return new BigBandit(mapX, mapY, x, y);
+        case 'RikkiRat': return new RikkiRat(mapX, mapY, x, y);
         default: 
             console.warn(`Неизвестный класс NPC: ${className}, используется Character`);
             return new Character(type, mapX, mapY, x, y);
@@ -104,6 +105,9 @@ function skipVideo() {
     
     // Спавним NPC для стартовой локации
     processLocationSpawns(startX, startY);
+
+    // === ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ДИАЛОГОВ ===
+    gameContext.dialogSystem = new DialogSystem();
 }
 
 // --- Загрузка ресурсов ---
@@ -198,33 +202,71 @@ function update() {
                 onCountdownFinished();
             }
         }
-
-        if (gameContext.player) {
-            gameContext.player.update();
-            
-            // === ПРОВЕРКА СМЕНЫ ЛОКАЦИИ ДЛЯ СПАВНА (по координатам) ===
-            const currentX = gameContext.player.mapX;
-            const currentY = gameContext.player.mapY;
-            const currentKey = getLocationKey(currentX, currentY);
-            
-            if (!gameContext.locationStates[currentKey]) {
-                gameContext.locationStates[currentKey] = {
-                    enterTime: Date.now(),
-                    spawnedConfigs: new Set()
-                };
-                loadSceneResources(); // Загружаем ресурсы новой локации
-            }
-            
-            // Обрабатываем отложенные спавны (например, самураи через 10 сек)
-            processLocationSpawns(currentX, currentY);
-        }
         
-        // === Обновление NPC ===
-        gameContext.npcs.forEach(npc => {
-            if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
-                npc.update();
+        // === ОБНОВЛЕНИЕ ДИАЛОГА ===
+        if (gameContext.dialogSystem && gameContext.dialogSystem.isActive()) {
+            gameContext.dialogSystem.update();
+            
+            // Блокируем управление героем
+            if (gameContext.player) {
+                gameContext.player.isMoving = false;
             }
-        });
+        } else {
+            // Обычная логика
+            if (gameContext.player) {
+                gameContext.player.update();
+                
+                // === ПРОВЕРКА СМЕНЫ ЛОКАЦИИ ДЛЯ СПАВНА ===
+                const currentX = gameContext.player.mapX;
+                const currentY = gameContext.player.mapY;
+                const currentKey = getLocationKey(currentX, currentY);
+                
+                if (!gameContext.locationStates[currentKey]) {
+                    gameContext.locationStates[currentKey] = {
+                        enterTime: Date.now(),
+                        spawnedConfigs: new Set()
+                    };
+                    loadSceneResources();
+                }
+                
+                // Обрабатываем отложенные спавны (только если нет диалога)
+                processLocationSpawns(currentX, currentY);
+                
+                // === ПРОВЕРКА ТРИГГЕРА ДИАЛОГА ===
+                for (const npc of gameContext.npcs) {
+                    if (npc.mapX === gameContext.player.mapX && 
+                        npc.mapY === gameContext.player.mapY &&
+                        npc.interaction && npc.interaction.dialog) {
+                        
+                        const dx = npc.x - gameContext.player.x;
+                        const dy = npc.y - gameContext.player.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        // === СБРОС ФЛАГА: если герой отошёл далеко ===
+                        if (npc.dialogPlayed && distance > 100) {
+                            npc.dialogPlayed = false;
+                            console.log(`💬 Диалог с ${npc.type} сброшен (герой отошёл)`);
+                        }
+                        
+                        // === ЗАПУСК ДИАЛОГА: близко и ещё не сыгран ===
+                        if (distance < 50 && !npc.dialogPlayed) {
+                            gameContext.dialogSystem.startDialog(npc, npc.interaction.dialog);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // === Обновление NPC ===
+            gameContext.npcs.forEach(npc => {
+                if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
+                    // Блокируем NPC на время диалога
+                    if (!gameContext.dialogSystem || !gameContext.dialogSystem.isActive()) {
+                        npc.update();
+                    }
+                }
+            });
+        }
         
         // === Удаляем помеченных NPC ===
         const before = gameContext.npcs.length;
@@ -233,24 +275,20 @@ function update() {
             console.log(`Удалено NPC: ${before - gameContext.npcs.length}`);
         }
         
-        // === НОВОЕ: Обновление дрона и его пуль ===
-        if (gameContext.dron) {
-            gameContext.dron.update();
-        }
-        // === Обновление пуль ===
-        gameContext.bullets.forEach(bullet => bullet.update());
-        gameContext.bullets = gameContext.bullets.filter(b => b.alive);
-
         // === Обновление пуль ===
         gameContext.bullets.forEach(bullet => bullet.update());
         gameContext.bullets = gameContext.bullets.filter(b => b.alive);
         
-        // === НОВОЕ: Обновление дрона и его пуль ===
+        // === Обновление дрона и его пуль ===
         if (gameContext.dron) {
             gameContext.dron.update();
         }
         gameContext.dronBullets.forEach(bullet => bullet.update());
         gameContext.dronBullets = gameContext.dronBullets.filter(b => b.alive);
+
+        // === НОВОЕ: Обновление пуль рикки ===
+        gameContext.rikkiBullets.forEach(bullet => bullet.update());
+        gameContext.rikkiBullets = gameContext.rikkiBullets.filter(b => b.alive);
     }
 }
 
@@ -281,6 +319,11 @@ function renderGameplay() {
     
     gameContext.bullets.forEach(bullet => {
         drawables.push({ type: 'bullet', obj: bullet, y: bullet.y, x: bullet.x });
+    });
+
+    // === НОВОЕ: Пули рикки (участвуют в сортировке по Y) ===
+    gameContext.rikkiBullets.forEach(bullet => {
+        drawables.push({ type: 'rikki_bullet', obj: bullet, y: bullet.y, x: bullet.x });
     });
     
     // Стабильная сортировка по Y, затем по X
@@ -336,6 +379,11 @@ function renderGameplay() {
         ctx.fillText(`ВРЕМЯ: ${remaining}с`, canvas.width - 20, 40);
         
         ctx.textAlign = 'left'; // Возвращаем стандартное выравнивание
+    }
+
+    // === НОВОЕ: Отрисовка диалога (поверх всего) ===
+    if (gameContext.dialogSystem) {
+        gameContext.dialogSystem.draw(ctx);
     }
 }
 

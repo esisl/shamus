@@ -45,6 +45,10 @@ class Character {
         
         this.movingAnimation = 'walk';
         this.idleAnimation = 'stay'; 
+
+        // === НОВОЕ: Параметры ближней атаки героя ===
+        this.attackCycles = 0;        // 0 = NPC не атакует героя в ближнем бою
+        this.fightFramesCounted = 0;  // Счётчик кадров в режиме fight
     }
 
     kill() {
@@ -81,6 +85,24 @@ class Character {
         }
         if (this.status === 'alive') {
             this.updateMovement();
+
+            // === НОВОЕ: Проверка ближней атаки героя ===
+            if (this.attackCycles > 0 && this.state === 'fight') {
+                this.fightFramesCounted++;
+                
+                const frameCount = getFrameCount(this.type, 'fight');
+                const threshold = this.attackCycles * frameCount;
+                
+                if (frameCount > 0 && this.fightFramesCounted >= threshold) {
+                    const player = gameContext.player;
+                    if (player && player.status === 'alive') {
+                        player.kill();
+                        console.log(`💀 ${this.type} убил героя в ближнем бою после ${this.attackCycles} циклов анимации!`);
+                    }
+                    // Сбрасываем, чтобы не спамить kill()
+                    this.fightFramesCounted = 0;
+                }
+            }
         }
     }
 

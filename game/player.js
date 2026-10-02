@@ -166,7 +166,7 @@ class Player extends Character {
             }
             return;  // Никаких движений, стрельбы, переходов
         }
-
+        
         if (this.isTransitioning) return;
         
         // === Обработка стрельбы ===

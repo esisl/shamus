@@ -36,6 +36,12 @@ const gameContext = {
     // === НОВОЕ: Хранит время входа и заспавненные конфиги для каждой локации ===
     locationStates: {},
 
+    // === Система диалогов ===
+    dialogSystem: null,
+
+    // === НОВОЕ: Пули рикки-крысы ===
+    rikkiBullets: [],
+
     // === НОВОЕ: Состояние таймера обратного отсчета ===
     countdownActive: false,
     countdownDuration: 10, // Длительность в секундах
@@ -50,12 +56,20 @@ const LOCATION_DATA = {
                 class: 'BigBandit', 
                 spawnZone: 'W', 
                 count: 7, 
-                delay: 10, // Задержка 10 секунд после входа
+                delay: 15, // Задержка 10 секунд после входа
                 initialState: 'run', 
                 interaction: {} 
             },
             { class: 'Character', type: 'bomzh', x: 728, y: 335, state: 'sit', direction: 135, delay: 0, interaction: {} },
-            { class: 'Puta', type: 'puta', x: 553, y: 272, state: 'stay', direction: 45, delay: 0, interaction: {} }
+            { class: 'Puta', type: 'puta', x: 553, y: 272, state: 'stay', direction: 45, delay: 0, interaction: {
+                dialog: [
+                        { speaker: 'npc', text: 'Привет, красавчик!' },
+                        { speaker: 'hero', text: 'Привет...' },
+                        { speaker: 'npc', text: 'Не хочешь провести время?' },
+                        { speaker: 'hero', text: 'Нет, спасибо.' },
+                        { speaker: 'npc', text: 'Как хочешь...' }
+                    ]
+            } }
         ]
     },
     '2_2': { // Локация 2,2 (mapX=2, mapY=2)
@@ -68,7 +82,20 @@ const LOCATION_DATA = {
                 initialState: 'run', 
                 interaction: {} 
             },
-            { class: 'Diler', type: 'diler', x: 292, y: 418, state: 'stay', direction: 315, delay: 0, interaction: {} }
+            { class: 'Diler', type: 'diler', x: 292, y: 418, state: 'stay', direction: 315, delay: 0, interaction: {}
+            }
+        ]
+    },
+    '3_3':{
+        npcs: [
+            {
+                class: 'RikkiRat',
+                x: 640,
+                y: 400,
+                initialState: 'stay',
+                delay: 0,
+                interaction: {}
+            }
         ]
     }
     // Остальные локации можно добавлять сюда по мере необходимости
