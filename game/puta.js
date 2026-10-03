@@ -56,6 +56,12 @@ class Puta extends Character {
         this.state = 'run';
         this.frame = 0;
         this.animCounter = 0;
+
+        // === СТУК КАБЛУКОВ ===
+        if (sounds.scream) {
+            sounds.scream.currentTime = 0;
+            sounds.scream.play().catch(e => console.warn('Heels: звук заблокирован', e));
+        }
         
         // Находим ближайшую зону перехода
         const targetZone = this.findNearestTransitionZone();
@@ -111,6 +117,13 @@ class Puta extends Character {
                 // Исчезаем!
                 this.removed = true;
                 this.isFleeing = false;
+
+                // === ОСТАНОВКА СТУКА КАБЛУКОВ ===
+                if (sounds.scream) {
+                    sounds.scream.pause();
+                    sounds.scream.currentTime = 0;
+                }
+
                 console.log(`Путана исчезла через зону ${zone}`);
                 return;
             }

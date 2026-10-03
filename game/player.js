@@ -20,6 +20,9 @@ class Player extends Character {
     // Стрельба с поворотом в сторону клика
     shoot(clickX, clickY) {
         if (this.isMoving || this.isTransitioning || this.isShooting) return;
+
+        // === ЗВУК ВЫСТРЕЛА ===
+        playSoundOnce('assets/sounds/fire.ogg', 0.5);
         
         // === НОВОЕ: Запуск таймера при первом выстреле ===
         if (!gameContext.countdownActive) {
@@ -226,6 +229,12 @@ class Player extends Character {
         // === СБРОС ТАЙМЕРА ПРИ ПЕРЕХОДЕ ===
         gameContext.countdownActive = false;
         console.log(`⏱️ Таймер сброшен при переходе в новую локацию`);
+
+        // === СБРОС ДРОНА И ОСТАНОВКА ЖУЖЖАНИЯ ===
+        if (gameContext.dron && sounds.dron) {
+            sounds.dron.pause();
+            sounds.dron.currentTime = 0;
+        }
 
         // === СБРОС ДРОНА ПРИ ПЕРЕХОДЕ ===
         gameContext.dron = null;

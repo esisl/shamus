@@ -177,6 +177,9 @@ class PoliceDron {
     fireBullet() {
         const player = gameContext.player;
         if (!player) return;
+
+        // === ЗВУК ВЫСТРЕЛА ДРОНА ===
+        playSoundOnce('assets/sounds/fire.ogg', 0.4);
         
         // Стреляем в текущую позицию героя
         const bullet = new DronBullet(this.x, this.y, player.x, player.y, 8);

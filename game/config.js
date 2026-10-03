@@ -120,3 +120,42 @@ const resources = {
     front: null,
     atlas: null
 };
+
+// --- Звуки ---
+const sounds = {
+    fire: null,
+    scream: null,
+    dron: null,
+    heels: null
+};
+
+// Загрузка всех звуков
+function loadSounds() {
+    sounds.fire = new Audio('assets/sounds/fire.ogg');
+    sounds.fire.volume = 0.5;
+    
+    sounds.scream = new Audio('assets/sounds/scream.ogg');
+    sounds.scream.volume = 0.7;
+    
+    sounds.dron = new Audio('assets/sounds/dron.ogg');
+    sounds.dron.loop = true;
+    sounds.dron.volume = 0.4;
+    
+    sounds.heels = new Audio('assets/sounds/heels.ogg');
+    sounds.heels.loop = true;
+    sounds.heels.volume = 0.5;
+    
+    sounds.samura = new Audio('assets/sounds/samura.ogg');
+    sounds.samura.loop = true;
+    sounds.samura.volume = 0.5;
+    
+    console.log('🔊 Звуки загружены');
+}
+
+// Вспомогательная функция для воспроизведения одноразовых звуков
+// (создаём новый Audio каждый раз, чтобы можно было накладывать несколько)
+function playSoundOnce(soundSrc, volume = 0.5) {
+    const audio = new Audio(soundSrc);
+    audio.volume = volume;
+    audio.play().catch(e => console.warn('Звук заблокирован браузером:', e));
+}

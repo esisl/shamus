@@ -92,6 +92,9 @@ function startGame(lang) {
 function skipVideo() {
     document.getElementById('video-screen').classList.add('hidden');
     gameContext.currentState = STATE.GAMEPLAY;
+
+    // === ЗАГРУЗКА ЗВУКОВ ===
+    loadSounds();
     
     // Инициализируем стартовую локацию по координатам
     const startX = gameContext.player.mapX;
@@ -264,6 +267,13 @@ function update() {
                     if (!gameContext.dialogSystem || !gameContext.dialogSystem.isActive()) {
                         npc.update();
                     }
+                } else {
+                    // === НОВОЕ: Останавливаем звуки NPC в других локациях ===
+                    if (npc.runSound) {
+                        npc.runSound.pause();
+                        npc.runSound.currentTime = 0;
+                        npc.runSound = null;
+                    }
                 }
             });
         }
@@ -391,6 +401,12 @@ function renderGameplay() {
 function onCountdownFinished() {
     console.log("⏰ ТАЙМЕР ЗАВЕРШЕН! Прилетает дрон!");
     gameContext.dron = new PoliceDron();
+
+    // === ЗАПУСК ЖУЖЖАНИЯ ДРОНА ===
+    if (sounds.dron) {
+        sounds.dron.currentTime = 0;
+        sounds.dron.play().catch(e => console.warn('Дрон: звук заблокирован', e));
+    }
 }
 
 // --- Запуск ---

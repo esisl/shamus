@@ -259,6 +259,9 @@ class RikkiRat extends Character {
     }
     
     fireBullet(player) {
+        // === ЗВУК ВЫСТРЕЛА РИККИ ===
+        playSoundOnce('assets/sounds/fire.ogg', 0.4);
+
         // Стреляем в текущую позицию героя (без упреждения — для честности)
         const bullet = new RikkiRatBullet(this.x, this.y - 50, player.x, player.y, 7);
         gameContext.rikkiBullets.push(bullet);

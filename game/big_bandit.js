@@ -28,6 +28,8 @@ class BigBandit extends Character {
         // === НОВОЕ: Атакует героя после 3 циклов анимации fight ===
         this.attackCycles = 3;
         this.fightFramesCounted = 0;
+
+        this.runSound = null;
     }
     
     // Вычисляет дистанцию fight из размера спрайта
@@ -42,6 +44,13 @@ class BigBandit extends Character {
     
     update() {
         if (this.status === 'dying' || this.status === 'dead') {
+            // === ОСТАНОВКА ЗВУКА БЕГА ПРИ СМЕРТИ ===
+            if (this.runSound) {
+                this.runSound.pause();
+                this.runSound.currentTime = 0;
+                this.runSound = null;
+            }
+
             super.update();
             return;
         }
@@ -55,6 +64,14 @@ class BigBandit extends Character {
             this.state = 'stay';
             this.isMoving = false;
             this.fightFramesCounted = 0;  // === СБРОС СЧЁТЧИКА ===
+
+            // === ОСТАНОВКА ЗВУКА БЕГА ===
+            if (this.runSound) {
+                this.runSound.pause();
+                this.runSound.currentTime = 0;
+                this.runSound = null;
+            }
+
             return;
         }
         
@@ -71,11 +88,21 @@ class BigBandit extends Character {
                 this.frame = 0;
                 this.animCounter = 0;
                 this.fightFramesCounted = 0;  // === СБРОС ПРИ ВХОДЕ В FIGHT ===
+                // === КРИК ПРИ АТАКЕ ===
+                playSoundOnce('assets/sounds/heels.ogg', 0.7);
             }
         } else {
             if (this.mode !== 'chase') {
                 this.mode = 'chase';
                 this.fightFramesCounted = 0;  // === СБРОС ПРИ ВЫХОДЕ ИЗ FIGHT ===
+
+                // === ЗАПУСК ЗВУКА БЕГА ===
+                if (!this.runSound) {
+                    this.runSound = new Audio('assets/sounds/heels.ogg');
+                    this.runSound.loop = true;
+                    this.runSound.volume = 0.3;
+                    this.runSound.play().catch(e => {});
+                }
             }
         }
         
