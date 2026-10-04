@@ -141,7 +141,7 @@ function loadSounds() {
     sounds.dron.loop = true;
     sounds.dron.volume = 0.4;
     
-    sounds.heels = new Audio('assets/sounds/heels.ogg');
+    sounds.heels = new Audio('assets/sounds/samura.ogg');
     sounds.heels.loop = true;
     sounds.heels.volume = 0.5;
     

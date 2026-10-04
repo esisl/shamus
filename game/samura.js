@@ -99,7 +99,7 @@ class Samura extends Character {
 
                 // === ЗАПУСК ЗВУКА БЕГА ===
                 if (!this.runSound) {
-                    this.runSound = new Audio('assets/sounds/samura_run.ogg');
+                    this.runSound = new Audio('assets/sounds/samura.ogg');
                     this.runSound.loop = true;
                     this.runSound.volume = 0.3;
                     this.runSound.play().catch(e => {});

@@ -89,7 +89,7 @@ class BigBandit extends Character {
                 this.animCounter = 0;
                 this.fightFramesCounted = 0;  // === СБРОС ПРИ ВХОДЕ В FIGHT ===
                 // === КРИК ПРИ АТАКЕ ===
-                playSoundOnce('assets/sounds/heels.ogg', 0.7);
+                playSoundOnce('assets/sounds/samura.ogg', 0.7);
             }
         } else {
             if (this.mode !== 'chase') {
@@ -98,7 +98,7 @@ class BigBandit extends Character {
 
                 // === ЗАПУСК ЗВУКА БЕГА ===
                 if (!this.runSound) {
-                    this.runSound = new Audio('assets/sounds/heels.ogg');
+                    this.runSound = new Audio('assets/sounds/samura.ogg');
                     this.runSound.loop = true;
                     this.runSound.volume = 0.3;
                     this.runSound.play().catch(e => {});
