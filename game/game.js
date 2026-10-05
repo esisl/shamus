@@ -85,7 +85,7 @@ function startGame(lang) {
     document.getElementById('video-screen').classList.remove('hidden');
     gameContext.currentState = STATE.VIDEO;
     
-    gameContext.player = new Player('hero', 2, 2, 640, 360);
+    gameContext.player = new Player('hero', 0, 5, 460, 500);
     loadSceneResources();
 }
 

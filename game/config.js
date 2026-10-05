@@ -10,12 +10,12 @@ const STATE = {
 const gameContext = {
     // Карта 8x6 (8 колонок, 6 строк)
     map: [
-        ['WN', 'N', 'N', 'N', 'N', 'NE'],
-        ['W', 'WE', 'WS', 'WE', 'WE', 'E'],
-        ['W', 'WE', 'NESW', 'NESW', 'WE', 'E'],
-        ['W', 'WE', 'NESW', 'NESW', 'WE', 'E'],
-        ['W', 'WE', 'WE', 'WE', 'WE', 'E'],
-        ['SW', 'S', 'S', 'S', 'S', 'SE']
+        ['E', 'WE', 'WES', 'WE', 'WS', 'E', 'WE', 'WS'],
+        ['ES', 'W', 'NS', 'ES', 'WN', 'ES', 'WE', 'NWS'],
+        ['NES', 'WE', 'WN', 'NES', 'W', 'NS', 'E', 'WN'],
+        ['NS', 'ES', 'WE', 'NESW', 'WS', 'NES', 'WES', 'WS'],
+        ['NS', 'NS', 'S', 'NS', 'NS', 'N', 'N', 'NS'],
+        ['NE', 'WN', 'NE', 'WN', 'NE', 'WE', 'WE', 'WN'],
     ],
     
    // Игрок теперь создается в game.js
@@ -86,12 +86,12 @@ const LOCATION_DATA = {
             }
         ]
     },
-    '3_3':{
+    '6_2':{
         npcs: [
             {
                 class: 'RikkiRat',
-                x: 640,
-                y: 400,
+                x: 400,
+                y: 450,
                 initialState: 'stay',
                 delay: 0,
                 interaction: {}
