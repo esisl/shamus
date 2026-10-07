@@ -50,6 +50,119 @@ const gameContext = {
 
 // === НОВОЕ: Конфигурация содержимого локаций ===
 const LOCATION_DATA = {
+    '3_1':{npcs: [
+        {class: 'Puta', type: 'puta', x: 490, y: 237, state: 'stay', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Эй, ты что-то ищешь, да?' },
+                { speaker: 'hero', text: 'Откуда ты знаешь?' },
+                { speaker: 'npc', text: 'Вижу я таких. Глаза бегают.' },
+                { speaker: 'hero', text: 'Мне нужен один тип. Рикки.' },
+                { speaker: 'npc', text: 'Рикки... Слышала имя. Один мой клиент болтал — он где-то на северо-востоке. В трущобах.' },
+                { speaker: 'hero', text: 'Спасибо.' },
+                { speaker: 'npc', text: 'Не благодари. И будь осторожен — оттуда не все возвращаются.' }
+            ]
+        }}
+    ]},
+    '0_2':{npcs: [
+        {class: 'Puta', type: 'puta', x: 618, y: 325, state: 'stay', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Не стой тут. Мешаешь.' },
+                { speaker: 'hero', text: 'Извини.' },
+                { speaker: 'npc', text: 'Проваливай.' }
+            ]
+        }}
+    ]},
+    '7_3':{npcs: [
+        {class: 'Puta', type: 'puta', x: 1044, y: 440, state: 'stay', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Знаешь, что самое странное в этом городе?' },
+                { speaker: 'hero', text: 'Что?' },
+                { speaker: 'npc', text: 'Все куда-то бегут. И никто не знает — зачем.' },
+                { speaker: 'hero', text: 'Может, и не надо знать.' },
+                { speaker: 'npc', text: 'Может, и так...' }
+            ]
+        }}
+    ]},
+    '5_3':{npcs: [
+        {class: 'Puta', type: 'puta', x: 612, y: 320, state: 'stay', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Опять этот дождь... Надоело.' },
+                { speaker: 'hero', text: 'Бывает.' },
+                { speaker: 'npc', text: 'Не бывает. Просто ты ещё не жил тут долго.' }
+            ]
+        }}
+    ]},
+    
+    '1_3':{npcs: [
+        { class: 'Diler', type: 'diler', x: 640, y: 190, state: 'stay', direction: 45, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Ты ищешь кого-то, Кайто?' },
+                { speaker: 'hero', text: 'Мне сказали, ты знаешь про Рикки.' },
+                { speaker: 'npc', text: 'Рикки? Ха! Забудь.' },
+                { speaker: 'hero', text: 'Почему?' },
+                { speaker: 'npc', text: 'Потому что Рикки ты никогда не найдёшь. Он — тень. Понял? Тень.' },
+                { speaker: 'hero', text: 'Посмотрим.' },
+                { speaker: 'npc', text: 'Посмотришь — и сгнёшь. Я сказал.' }
+            ]
+        }}
+    ]},
+    '4_1':{npcs: [
+        { class: 'Diler', type: 'diler', x: 647, y: 292, state: 'stay', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Психософ последнего поколения! Мозги как новые!' },
+                { speaker: 'hero', text: 'Сколько?' },
+                { speaker: 'npc', text: 'Для тебя — дорого. Уходи.' }
+            ]
+        }}
+    ]},
+    '3_3':{npcs: [
+        { class: 'Diler', type: 'diler', x: 645, y: 235, state: 'stay', direction: 90, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Эй, парень. Ты тут новенький?' },
+                { speaker: 'hero', text: 'А что?' },
+                { speaker: 'npc', text: 'Не суй нос не в своё дело. Тут стены имеют уши.' },
+                { speaker: 'hero', text: 'Спасибо за совет.' },
+                { speaker: 'npc', text: 'Не благодари. Просто проваливай.' }
+            ]
+        }}
+    ]},
+    '7_5':{npcs: [
+        { class: 'Diler', type: 'diler', x: 416, y: 440, state: 'stay', direction: 90, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Чипы? Софт? Есть всё.' },
+                { speaker: 'hero', text: 'Не сегодня.' },
+                { speaker: 'npc', text: 'Как знаешь. Товар не ждёт.' }
+            ]
+        }}
+    ]},
+
+    '1_1':{npcs: [
+        { class: 'Character', type: 'bomzh', x: 438, y: 340, state: 'sit', direction: 45, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Ты тоже их слышишь? Они шуршат... шуршат...' },
+                { speaker: 'hero', text: 'Кто?' },
+                { speaker: 'npc', text: 'Крысы! Огромные! С красными глазами! Они везде!' },
+                { speaker: 'hero', text: 'Где?' },
+                { speaker: 'npc', text: 'В стенах! В трубах! В головах! Одна из них... она особенная. Она — Король. Рикки-Рат! Рикки-Рат!' },
+                { speaker: 'hero', text: 'Что ты знаешь про Рикки?' },
+                { speaker: 'npc', text: 'Он видит сквозь стены! Он слышит мысли! Не ищи его! НЕ ИЩИ ЕГО!' },
+                { speaker: 'hero', text: 'Спокойно...' },
+                { speaker: 'npc', text: 'У-у-у... они идут... они уже тут... у-у-у...' }
+            ]
+        } },
+    ]},
+    '1_4':{npcs: [
+        { class: 'Character', type: 'bomzh', x: 878, y: 498, state: 'sit', direction: 135, delay: 0, interaction: {
+            dialog: [
+                { speaker: 'npc', text: 'Хр-р-р... кхх...' },
+                { speaker: 'hero', text: 'Эй, живой?' },
+                { speaker: 'npc', text: 'Бр-р-р... ф-ф-ф...' },
+                { speaker: 'hero', text: 'Спит.' }
+            ]
+        } },
+    ]},
+
+
     '2_1': { // Локация 2,1 (mapX=2, mapY=1)
         npcs: [
             { 
@@ -59,17 +172,7 @@ const LOCATION_DATA = {
                 delay: 15, // Задержка 10 секунд после входа
                 initialState: 'run', 
                 interaction: {} 
-            },
-            { class: 'Character', type: 'bomzh', x: 728, y: 335, state: 'sit', direction: 135, delay: 0, interaction: {} },
-            { class: 'Puta', type: 'puta', x: 553, y: 272, state: 'stay', direction: 45, delay: 0, interaction: {
-                dialog: [
-                        { speaker: 'npc', text: 'Привет, красавчик!' },
-                        { speaker: 'hero', text: 'Привет...' },
-                        { speaker: 'npc', text: 'Не хочешь провести время?' },
-                        { speaker: 'hero', text: 'Нет, спасибо.' },
-                        { speaker: 'npc', text: 'Как хочешь...' }
-                    ]
-            } }
+            }
         ]
     },
     '2_2': { // Локация 2,2 (mapX=2, mapY=2)
@@ -81,8 +184,6 @@ const LOCATION_DATA = {
                 delay: 10, // Задержка 10 секунд после входа
                 initialState: 'run', 
                 interaction: {} 
-            },
-            { class: 'Diler', type: 'diler', x: 292, y: 418, state: 'stay', direction: 315, delay: 0, interaction: {}
             }
         ]
     },

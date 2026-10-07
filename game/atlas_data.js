@@ -5638,7 +5638,7 @@ const ATLAS_DATA = {
     }
   },
   "bomzh": {
-    "sit": {
+    "stay": {
       "000": {
         "0": {
           "x": 3689,
