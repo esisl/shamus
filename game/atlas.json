@@ -1,4 +1,4 @@
-const ATLAS_DATA = {
+{
   "police_dron": {
     "fly": {
       "045": {
