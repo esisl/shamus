@@ -61,7 +61,9 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Спасибо.' },
                 { speaker: 'npc', text: 'Не благодари. И будь осторожен — оттуда не все возвращаются.' }
             ]
-        }}
+        }},
+        { class: 'Samura', spawnZone: 'S', count: 2, delay: 10, initialState: 'run', interaction: {}},
+        { class: 'BigBandit',spawnZone: 'S', count: 5, delay: 11, initialState: 'run', interaction: {}}
     ]},
     '0_2':{npcs: [
         {class: 'Puta', type: 'puta', x: 618, y: 325, state: 'stay', direction: 135, delay: 0, interaction: {
@@ -70,7 +72,9 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Извини.' },
                 { speaker: 'npc', text: 'Проваливай.' }
             ]
-        }}
+        }},
+        { class: 'BigBandit',spawnZone: 'N', count: 3, delay: 15, initialState: 'run', interaction: {}},
+        { class: 'Samura', spawnZone: 'E', count: 2, delay: 15, initialState: 'run', interaction: {}}
     ]},
     '7_3':{npcs: [
         {class: 'Puta', type: 'puta', x: 1044, y: 440, state: 'stay', direction: 135, delay: 0, interaction: {
@@ -104,7 +108,8 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Посмотрим.' },
                 { speaker: 'npc', text: 'Посмотришь — и сгнёшь. Я сказал.' }
             ]
-        }}
+        }},
+        { class: 'BigBandit',spawnZone: 'E', count: 3, delay: 12, initialState: 'run', interaction: {}}
     ]},
     '4_1':{npcs: [
         { class: 'Diler', type: 'diler', x: 647, y: 292, state: 'stay', direction: 135, delay: 0, interaction: {
@@ -113,7 +118,8 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Сколько?' },
                 { speaker: 'npc', text: 'Для тебя — дорого. Уходи.' }
             ]
-        }}
+        }},
+        { class: 'BigBandit',spawnZone: 'N', count: 5, delay: 10, initialState: 'run', interaction: {}}
     ]},
     '3_3':{npcs: [
         { class: 'Diler', type: 'diler', x: 645, y: 235, state: 'stay', direction: 90, delay: 0, interaction: {
@@ -124,7 +130,10 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Спасибо за совет.' },
                 { speaker: 'npc', text: 'Не благодари. Просто проваливай.' }
             ]
-        }}
+        }},
+        { class: 'BigBandit',spawnZone: 'N', count: 2, delay: 15, initialState: 'run', interaction: {}},
+        { class: 'BigBandit',spawnZone: 'E', count: 3, delay: 15, initialState: 'run', interaction: {}},
+        { class: 'Samura', spawnZone: 'S', count: 1, delay: 15, initialState: 'run', interaction: {}}
     ]},
     '7_5':{npcs: [
         { class: 'Diler', type: 'diler', x: 416, y: 440, state: 'stay', direction: 90, delay: 0, interaction: {
@@ -160,6 +169,7 @@ const LOCATION_DATA = {
                 { speaker: 'hero', text: 'Спит.' }
             ]
         } },
+        { class: 'BigBandit',spawnZone: 'N', count: 3, delay: 10, initialState: 'run', interaction: {}}
     ]},
 
 
@@ -442,38 +452,12 @@ const LOCATION_DATA = {
         {class: 'Samura', type: 'samura', x: 535, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
         {class: 'Samura', type: 'samura', x: 540, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}}
     ]},
-    '':{npcs:[
-        
-    ]},
-    '':{npcs:[
-        
+
+    '0_5':{npcs:[
+        { class: 'BigBandit',spawnZone: 'E', count: 2, delay: 5, initialState: 'run', interaction: {}},
+        { class: 'BigBandit',spawnZone: 'N', count: 2, delay: 5, initialState: 'run', interaction: {}}
     ]},
 
-
-    '2_1': { // Локация 2,1 (mapX=2, mapY=1)
-        npcs: [
-            { 
-                class: 'BigBandit', 
-                spawnZone: 'W', 
-                count: 7, 
-                delay: 15, // Задержка 10 секунд после входа
-                initialState: 'run', 
-                interaction: {} 
-            }
-        ]
-    },
-    '2_2': { // Локация 2,2 (mapX=2, mapY=2)
-        npcs: [
-            { 
-                class: 'Samura', 
-                spawnZone: 'N', 
-                count: 5, 
-                delay: 10, // Задержка 10 секунд после входа
-                initialState: 'run', 
-                interaction: {} 
-            }
-        ]
-    },
     '6_2':{
         npcs: [
             {
