@@ -196,36 +196,255 @@ const LOCATION_DATA = {
     ]},
 
     '2_4':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 665, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 670, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 655, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 665, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 655, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '4_3':{npcs:[
+        {class: 'Samura', type: 'samura', x: 650, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 655, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 660, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 645, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 650, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 660, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 645, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
 
+    '4_4':{npcs:[
+        {class: 'Samura', type: 'samura', x: 570, y: 465, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 575, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 580, y: 460, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 570, y: 455, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 565, y: 460, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 570, y: 465, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '4_5':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 560, y: 515, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 565, y: 520, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 570, y: 510, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 565, y: 525, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 560, y: 515, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '5_5':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 328, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 332, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 342, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 640, y: 338, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 328, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 320, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '6_5':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 348, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 352, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 352, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 640, y: 348, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 635, y: 338, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '7_4':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 435, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 505, y: 440, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 510, y: 430, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 495, y: 435, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 445, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '6_3':{npcs:[
+        {class: 'Samura', type: 'samura', x: 700, y: 450, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 705, y: 455, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 710, y: 445, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 705, y: 450, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 710, y: 455, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 700, y: 445, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+
+    '5_2':{npcs:[
+        {class: 'Samura', type: 'samura', x: 533, y: 450, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 530, y: 455, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 538, y: 460, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 553, y: 450, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 533, y: 455, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 533, y: 445, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '5_1':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 384, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 505, y: 389, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 510, y: 380, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 380, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '6_1':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 355, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 625, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 625, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 355, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '7_1':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 367, y: 282, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 362, y: 287, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 360, y: 279, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 923, y: 545, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 927, y: 550, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 920, y: 540, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '7_2':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 585, y: 415, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 590, y: 420, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 580, y: 425, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 590, y: 410, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 585, y: 420, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '7_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 625, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 625, y: 325, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 320, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 615, y: 325, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 620, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '6_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 560, y: 410, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 565, y: 405, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 570, y: 400, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 565, y: 405, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 560, y: 410, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 555, y: 400, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '5_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 630, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 625, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 615, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 620, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '5_4':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 750, y: 540, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 755, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 760, y: 530, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 755, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 750, y: 540, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 745, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 740, y: 530, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 745, y: 520, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '6_4':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 750, y: 540, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 755, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 760, y: 530, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 750, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 755, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 745, y: 535, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 740, y: 530, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 745, y: 520, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '0_4':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 440, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 505, y: 435, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 510, y: 430, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 505, y: 440, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '0_3':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 500, y: 440, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 505, y: 435, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 510, y: 430, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 505, y: 430, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '1_2':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 680, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 685, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 690, y: 355, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 685, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 680, y: 355, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '2_2':{npcs:[
+        {class: 'Samura', type: 'samura', x: 600, y: 390, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 605, y: 395, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 400, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 615, y: 390, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 610, y: 390, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '2_1':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 540, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 545, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 550, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 530, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 535, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '2_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 600, y: 420, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 605, y: 425, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 610, y: 430, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 615, y: 435, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 620, y: 420, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 600, y: 440, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '3_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 650, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 655, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 660, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 665, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 645, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 640, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '4_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 650, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 655, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 660, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 650, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 645, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 640, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '3_2':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 740, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 745, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 750, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 745, y: 500, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 735, y: 485, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 730, y: 490, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 740, y: 495, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '4_2':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 780, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 785, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 790, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 780, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 775, y: 345, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 770, y: 335, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 780, y: 330, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
+    '1_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 570, y: 390, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 575, y: 395, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 580, y: 395, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 570, y: 400, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 575, y: 400, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 580, y: 380, state: 'run', direction: 135, delay: 0, interaction: {}},
+    ]},
+    '0_0':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 530, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 535, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 540, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 545, y: 475, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 530, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 535, y: 480, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'Samura', type: 'samura', x: 540, y: 470, state: 'run', direction: 135, delay: 0, interaction: {}}
     ]},
     '':{npcs:[
         
     ]},
-
-    '':{npcs:[
-        
-    ]},
-
-    '':{npcs:[
-        
-    ]},
-
-    '':{npcs:[
-        
-    ]},
-
-    '':{npcs:[
-        
-    ]},
-
-    '':{npcs:[
-        
-    ]},
-
-    '':{npcs:[
-        
-    ]},
-
     '':{npcs:[
         
     ]},
