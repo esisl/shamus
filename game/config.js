@@ -146,6 +146,9 @@ const LOCATION_DATA = {
     ]},
 
     '1_1':{npcs: [
+        {class: 'BigBandit', type: 'big_bandit', x: 750, y: 350, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 755, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 760, y: 360, state: 'run', direction: 135, delay: 0, interaction: {}},
         { class: 'Character', type: 'bomzh', x: 438, y: 340, state: 'sit', direction: 45, delay: 0, interaction: {
             dialog: [
                 { speaker: 'npc', text: 'Ты тоже их слышишь? Они шуршат... шуршат...' },
@@ -173,6 +176,11 @@ const LOCATION_DATA = {
     ]},
 
 
+    '0_1':{npcs:[
+        {class: 'BigBandit', type: 'big_bandit', x: 600, y: 315, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 610, y: 325, state: 'run', direction: 135, delay: 0, interaction: {}},
+        {class: 'BigBandit', type: 'big_bandit', x: 620, y: 305, state: 'run', direction: 135, delay: 0, interaction: {}}
+    ]},
     '1_5':{npcs:[
         {class: 'BigBandit', type: 'big_bandit', x: 600, y: 415, state: 'run', direction: 135, delay: 0, interaction: {}},
         {class: 'BigBandit', type: 'big_bandit', x: 610, y: 425, state: 'run', direction: 135, delay: 0, interaction: {}},
