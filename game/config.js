@@ -52,84 +52,44 @@ const gameContext = {
 const LOCATION_DATA = {
     '3_1':{npcs: [
         {class: 'Puta', type: 'puta', x: 490, y: 237, state: 'stay', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Эй, ты что-то ищешь, да?' },
-                { speaker: 'hero', text: 'Откуда ты знаешь?' },
-                { speaker: 'npc', text: 'Вижу я таких. Глаза бегают.' },
-                { speaker: 'hero', text: 'Мне нужен один тип. Рикки.' },
-                { speaker: 'npc', text: 'Рикки... Слышала имя. Один мой клиент болтал — он где-то на северо-востоке. В трущобах.' },
-                { speaker: 'hero', text: 'Спасибо.' },
-                { speaker: 'npc', text: 'Не благодари. И будь осторожен — оттуда не все возвращаются.' }
-            ]
+            dialogKey: 'puta_main'
         }},
         { class: 'Samura', spawnZone: 'S', count: 2, delay: 10, initialState: 'run', interaction: {}},
         { class: 'BigBandit',spawnZone: 'S', count: 5, delay: 11, initialState: 'run', interaction: {}}
     ]},
     '0_2':{npcs: [
         {class: 'Puta', type: 'puta', x: 618, y: 325, state: 'stay', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Не стой тут. Мешаешь.' },
-                { speaker: 'hero', text: 'Извини.' },
-                { speaker: 'npc', text: 'Проваливай.' }
-            ]
+            dialogKey: 'puta_bg4'
         }},
         { class: 'BigBandit',spawnZone: 'N', count: 3, delay: 15, initialState: 'run', interaction: {}},
         { class: 'Samura', spawnZone: 'E', count: 2, delay: 15, initialState: 'run', interaction: {}}
     ]},
     '7_3':{npcs: [
         {class: 'Puta', type: 'puta', x: 1044, y: 440, state: 'stay', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Знаешь, что самое странное в этом городе?' },
-                { speaker: 'hero', text: 'Что?' },
-                { speaker: 'npc', text: 'Все куда-то бегут. И никто не знает — зачем.' },
-                { speaker: 'hero', text: 'Может, и не надо знать.' },
-                { speaker: 'npc', text: 'Может, и так...' }
-            ]
+            dialogKey: 'puta_bg3'
         }}
     ]},
     '5_3':{npcs: [
         {class: 'Puta', type: 'puta', x: 612, y: 320, state: 'stay', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Опять этот дождь... Надоело.' },
-                { speaker: 'hero', text: 'Бывает.' },
-                { speaker: 'npc', text: 'Не бывает. Просто ты ещё не жил тут долго.' }
-            ]
+            dialogKey: 'puta_bg2'
         }}
     ]},
     
     '1_3':{npcs: [
         { class: 'Diler', type: 'diler', x: 640, y: 190, state: 'stay', direction: 45, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Ты ищешь кого-то, Кайто?' },
-                { speaker: 'hero', text: 'Мне сказали, ты знаешь про Рикки.' },
-                { speaker: 'npc', text: 'Рикки? Ха! Забудь.' },
-                { speaker: 'hero', text: 'Почему?' },
-                { speaker: 'npc', text: 'Потому что Рикки ты никогда не найдёшь. Он — тень. Понял? Тень.' },
-                { speaker: 'hero', text: 'Посмотрим.' },
-                { speaker: 'npc', text: 'Посмотришь — и сгнёшь. Я сказал.' }
-            ]
+            dialogKey: 'diler_plot'
         }},
         { class: 'BigBandit',spawnZone: 'E', count: 3, delay: 12, initialState: 'run', interaction: {}}
     ]},
     '4_1':{npcs: [
         { class: 'Diler', type: 'diler', x: 647, y: 292, state: 'stay', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Психософ последнего поколения! Мозги как новые!' },
-                { speaker: 'hero', text: 'Сколько?' },
-                { speaker: 'npc', text: 'Для тебя — дорого. Уходи.' }
-            ]
+            dialogKey: 'diler_bg3'
         }},
         { class: 'BigBandit',spawnZone: 'N', count: 5, delay: 10, initialState: 'run', interaction: {}}
     ]},
     '3_3':{npcs: [
         { class: 'Diler', type: 'diler', x: 645, y: 235, state: 'stay', direction: 90, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Эй, парень. Ты тут новенький?' },
-                { speaker: 'hero', text: 'А что?' },
-                { speaker: 'npc', text: 'Не суй нос не в своё дело. Тут стены имеют уши.' },
-                { speaker: 'hero', text: 'Спасибо за совет.' },
-                { speaker: 'npc', text: 'Не благодари. Просто проваливай.' }
-            ]
+            dialogKey: 'diler_bg2'
         }},
         { class: 'BigBandit',spawnZone: 'N', count: 2, delay: 15, initialState: 'run', interaction: {}},
         { class: 'BigBandit',spawnZone: 'E', count: 3, delay: 15, initialState: 'run', interaction: {}},
@@ -137,11 +97,7 @@ const LOCATION_DATA = {
     ]},
     '7_5':{npcs: [
         { class: 'Diler', type: 'diler', x: 416, y: 440, state: 'stay', direction: 90, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Чипы? Софт? Есть всё.' },
-                { speaker: 'hero', text: 'Не сегодня.' },
-                { speaker: 'npc', text: 'Как знаешь. Товар не ждёт.' }
-            ]
+            dialogKey: 'diler_bg1'
         }}
     ]},
 
@@ -150,27 +106,12 @@ const LOCATION_DATA = {
         {class: 'BigBandit', type: 'big_bandit', x: 755, y: 340, state: 'run', direction: 135, delay: 0, interaction: {}},
         {class: 'BigBandit', type: 'big_bandit', x: 760, y: 360, state: 'run', direction: 135, delay: 0, interaction: {}},
         { class: 'Character', type: 'bomzh', x: 438, y: 340, state: 'sit', direction: 45, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Ты тоже их слышишь? Они шуршат... шуршат...' },
-                { speaker: 'hero', text: 'Кто?' },
-                { speaker: 'npc', text: 'Крысы! Огромные! С красными глазами! Они везде!' },
-                { speaker: 'hero', text: 'Где?' },
-                { speaker: 'npc', text: 'В стенах! В трубах! В головах! Одна из них... она особенная. Она — Король. Рикки-Рат! Рикки-Рат!' },
-                { speaker: 'hero', text: 'Что ты знаешь про Рикки?' },
-                { speaker: 'npc', text: 'Он видит сквозь стены! Он слышит мысли! Не ищи его! НЕ ИЩИ ЕГО!' },
-                { speaker: 'hero', text: 'Спокойно...' },
-                { speaker: 'npc', text: 'У-у-у... они идут... они уже тут... у-у-у...' }
-            ]
+            dialogKey: 'bombzh_crazy'
         } },
     ]},
     '1_4':{npcs: [
         { class: 'Character', type: 'bomzh', x: 878, y: 498, state: 'sit', direction: 135, delay: 0, interaction: {
-            dialog: [
-                { speaker: 'npc', text: 'Хр-р-р... кхх...' },
-                { speaker: 'hero', text: 'Эй, живой?' },
-                { speaker: 'npc', text: 'Бр-р-р... ф-ф-ф...' },
-                { speaker: 'hero', text: 'Спит.' }
-            ]
+            dialogKey: 'bombzh_bg2'
         } },
         { class: 'BigBandit',spawnZone: 'N', count: 3, delay: 10, initialState: 'run', interaction: {}}
     ]},

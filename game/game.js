@@ -40,7 +40,7 @@ function spawnNPCFromConfig(mapX, mapY, npcConfig) {
             const offsetX = (i - (npcConfig.count - 1) / 2) * spacing;
             const npc = createNPCInstance(className, npcConfig.type, mapX, mapY, center.x + offsetX, center.y);
             npc.state = npcConfig.initialState || 'stay';
-            npc.interaction = npcConfig.interaction || {};
+            npc.interaction = resolveInteraction(npcConfig.interaction);  // ← РАЗРЕШАЕМ КЛЮЧ
             gameContext.npcs.push(npc);
         }
         console.log(`[SPAWN] Создано ${npcConfig.count} x ${className} в зоне ${npcConfig.spawnZone} локации [${mapX},${mapY}]`);
@@ -49,11 +49,27 @@ function spawnNPCFromConfig(mapX, mapY, npcConfig) {
         const npc = createNPCInstance(className, npcConfig.type, mapX, mapY, npcConfig.x, npcConfig.y);
         npc.state = npcConfig.initialState || 'stay';
         npc.direction = npcConfig.direction || 180;
-        npc.interaction = npcConfig.interaction || {};
+        npc.interaction = resolveInteraction(npcConfig.interaction);  // ← РАЗРЕШАЕМ КЛЮЧ
         gameContext.npcs.push(npc);
         console.log(`[SPAWN] Создан ${className} (${npcConfig.type}) в локации [${mapX},${mapY}]`);
     }
 }
+
+// === НОВАЯ ФУНКЦИЯ: преобразует dialogKey в реальный диалог ===
+function resolveInteraction(interaction) {
+    if (!interaction) return {};
+    if (interaction.dialogKey) {
+        const dialog = getDialog(interaction.dialogKey);
+        if (dialog && dialog.length > 0) {
+            return { dialog: dialog };
+        } else {
+            console.warn(`Диалог с ключом '${interaction.dialogKey}' не найден для языка '${gameContext.currentLanguage}'`);
+            return {};
+        }
+    }
+    return interaction;
+}
+
 
 // --- Проверка и выполнение отложенных спавнов ---
 function processLocationSpawns(mapX, mapY) {
@@ -316,14 +332,32 @@ function renderGameplay() {
 
     ctx.drawImage(resources.back, 0, 0, canvas.width, canvas.height);
     drawDebugPolygons();
+
+    // === 3. НОВОЕ: Сначала рисуем мёртвых NPC (на заднем плане) ===
+    gameContext.npcs.forEach(npc => {
+        if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
+            if (npc.status === 'dead' || npc.status === 'dying') {
+                npc.draw(ctx);
+            }
+        }
+    });
     
     const drawables = [];
     
-    drawables.push({ type: 'player', obj: gameContext.player, y: gameContext.player.y, x: gameContext.player.x });
+    // Игрок (если жив)
+    if (gameContext.player.status !== 'dead') {
+        drawables.push({ type: 'player', obj: gameContext.player, y: gameContext.player.y, x: gameContext.player.x });
+    } else {
+        // Мёртвый игрок рисуем отдельно (на заднем плане)
+        gameContext.player.draw(ctx);
+    }
     
+    // Живые NPC
     gameContext.npcs.forEach(npc => {
         if (npc.mapX === gameContext.player.mapX && npc.mapY === gameContext.player.mapY) {
-            drawables.push({ type: 'npc', obj: npc, y: npc.y, x: npc.x });
+            if (npc.status === 'alive') {
+                drawables.push({ type: 'npc', obj: npc, y: npc.y, x: npc.x });
+            }
         }
     });
     
@@ -394,6 +428,28 @@ function renderGameplay() {
     // === НОВОЕ: Отрисовка диалога (поверх всего) ===
     if (gameContext.dialogSystem) {
         gameContext.dialogSystem.draw(ctx);
+    }
+
+        // === НОВОЕ: GAME OVER ===
+    if (gameContext.player && gameContext.player.status === 'dead') {
+        // Затемнение экрана
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Надпись GAME OVER
+        ctx.fillStyle = '#ff0000';
+        ctx.font = 'bold 72px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+        
+        // Подсказка
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '20px monospace';
+        ctx.fillText('Нажмите F5 для перезапуска', canvas.width / 2, canvas.height / 2 + 60);
+        
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
     }
 }
 
