@@ -152,6 +152,9 @@ class Player extends Character {
 
     // Переопределяем update — добавляем логику переходов
     update() {
+        // === БЛОКИРОВКА УПРАВЛЕНИЯ НА ВРЕМЯ ВИДЕО ===
+        if (gameContext.isVideoPlaying) return;
+
         // === БЛОКИРОВКА УПРАВЛЕНИЯ ПРИ СМЕРТИ ===
         if (this.status === 'dying' || this.status === 'dead') {
             // Проигрываем анимацию die
@@ -294,6 +297,15 @@ class Player extends Character {
         this.transitionZone = spawnZoneType;
         this.previousZone = spawnZoneType;
         this.isTransitioning = false;
+
+        // === НОВОЕ: Проверка.special локации (6,2) для видео с Rikki ===
+        if (this.mapX === 6 && this.mapY === 2 && !gameContext.videosPlayed.rikki_dialog) {
+            // Блокируем управление на время видео
+            gameContext.isVideoPlaying = true;
+            playVideo('rikki_dialog', () => {
+                gameContext.isVideoPlaying = true; // Остаётся заблокированным, пока видео не закончится
+            });
+        }
     }
     
     // Переопределяем draw — добавляем индикатор перехода

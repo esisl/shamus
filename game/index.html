@@ -55,6 +55,57 @@
             border: 1px solid #0ff;
         }
         button:hover { background: #0ff; color: #000; }
+
+        #game-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .video-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .fallback-text {
+            font-size: 48px;
+            font-family: monospace;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255, 0, 100, 0.8);
+        }
+
+        .fallback-subtitle {
+            font-size: 20px;
+            font-family: monospace;
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+
+        .skip-btn {
+            padding: 12px 32px;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #fff;
+            color: #fff;
+            cursor: pointer;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+
+        .skip-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -68,10 +119,16 @@
         </div>
         
         <div id="video-screen" class="screen hidden">
-            <h2>Воспроизведение интро...</h2>
-            <button onclick="skipVideo()">Пропустить</button>
+        <video id="game-video" autoplay playsinline></video>
+        <div id="video-fallback" class="video-fallback hidden">
+            <div class="fallback-text">[VIDEO PLACEHOLDER]</div>
+            <div class="fallback-subtitle" id="fallback-subtitle"></div>
+            <button id="skip-video-btn" class="skip-btn">Пропустить / Skip</button>
         </div>
     </div>
+    </div>
+
+    
 
     <script src="atlas_data.js"></script>
     <script src="locations.js"></script>

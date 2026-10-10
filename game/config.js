@@ -6,6 +6,22 @@ const STATE = {
     GAMEOVER: 3
 };
 
+// --- Карта видеороликов ---
+const VIDEO_MAP = {
+    'intro': {
+        ru: 'assets/videos/intro_ru.mp4',
+        en: 'assets/videos/intro_en.mp4'
+    },
+    'rikki_dialog': {
+        ru: 'assets/videos/rikki_dialog_ru.mp4',
+        en: 'assets/videos/rikki_dialog_en.mp4'
+    },
+    'victory': {
+        ru: 'assets/videos/victory_ru.mp4',
+        en: 'assets/videos/victory_en.mp4'
+    }
+};
+
 // --- Игровой контекст ---
 const gameContext = {
     // Карта 8x6 (8 колонок, 6 строк)
@@ -17,6 +33,16 @@ const gameContext = {
         ['NS', 'NS', 'S', 'NS', 'NS', 'N', 'N', 'NS'],
         ['NE', 'WN', 'NE', 'WN', 'NE', 'WE', 'WE', 'WN'],
     ],
+
+    // === Состояние показанных видео ===
+    videosPlayed: {
+        intro: false,
+        rikki_dialog: false,
+        victory: false
+    },
+    
+    // === Флаг показа видео (блокирует игру) ===
+    isVideoPlaying: false,
     
    // Игрок теперь создается в game.js
     player: null,

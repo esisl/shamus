@@ -94,25 +94,124 @@ function processLocationSpawns(mapX, mapY) {
     });
 }
 
+// --- Воспроизведение видеоролика ---
+function playVideo(videoKey, onComplete) {
+    const lang = gameContext.currentLanguage || 'ru';
+    const videoSrc = VIDEO_MAP[videoKey]?.[lang];
+    
+    if (!videoSrc) {
+        console.warn(`[VIDEO] Не найден источник для ключа '${videoKey}', язык '${lang}'`);
+        if (onComplete) onComplete();
+        return;
+    }
+    
+    gameContext.isVideoPlaying = true;
+    
+    const videoScreen = document.getElementById('video-screen');
+    const video = document.getElementById('game-video');
+    const fallback = document.getElementById('video-fallback');
+    const fallbackSubtitle = document.getElementById('fallback-subtitle');
+    const skipBtn = document.getElementById('skip-video-btn');
+    
+    // Сброс состояния
+    video.classList.remove('hidden');
+    fallback.classList.add('hidden');
+    videoScreen.classList.remove('hidden');
+    
+    // Субтитры для заглушки
+    const subtitles = {
+        intro: { ru: 'Вступление: Кайто выходит на след...', en: 'Intro: Kaito is on the trail...' },
+        rikki_dialog: { ru: 'Диалог с Rikki Rat', en: 'Dialog with Rikki Rat' },
+        victory: { ru: 'Победа! Кайто победил Rikki Rat', en: 'Victory! Kaito defeated Rikki Rat' }
+    };
+    fallbackSubtitle.textContent = subtitles[videoKey]?.[lang] || '';
+    
+    // Функция завершения
+    let finished = false;
+    const finish = () => {
+        if (finished) return;
+        finished = true;
+        
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        
+        videoScreen.classList.add('hidden');
+        gameContext.isVideoPlaying = false;
+        gameContext.videosPlayed[videoKey] = true;
+        
+        // === УДАЛЕНИЕ ВСЕХ ОБРАБОТЧИКОВ ===
+        skipBtn.removeEventListener('click', finish);
+        videoScreen.removeEventListener('click', screenClickHandler);
+        document.removeEventListener('keydown', keyHandler);
+        video.removeEventListener('ended', finish);
+        video.removeEventListener('error', showError);
+        
+        if (onComplete) onComplete();
+    };
+    
+    // Обработчик ошибки — показываем заглушку
+    const showError = () => {
+        console.warn(`[VIDEO] Не удалось загрузить ${videoSrc}, показываем заглушку`);
+        video.classList.add('hidden');
+        fallback.classList.remove('hidden');
+    };
+    
+    // Привязываем события
+    video.addEventListener('ended', finish);
+    video.addEventListener('error', showError);
+    // === ОБРАБОТЧИКИ ПРОПУСКА ===
+    // 1. Клик по кнопке "Пропустить"
+    skipBtn.addEventListener('click', (e) => {
+        e.stopPropagation();  // Чтобы клик не сработал на video-screen
+        finish();
+    });
+
+    // 2. Клик по всему видео-экрану
+    const screenClickHandler = (e) => {
+        // Игнорируем клик, если он был по кнопке (уже обработан)
+        if (e.target === skipBtn) return;
+        finish();
+    };
+    videoScreen.addEventListener('click', screenClickHandler);
+
+    // 3. Нажатие пробела или Enter
+    const keyHandler = (e) => {
+        if (e.code === 'Space' || e.code === 'Enter') {
+            e.preventDefault();  // Чтобы пробел не скроллил страницу
+            finish();
+        }
+    };
+    document.addEventListener('keydown', keyHandler);
+    
+    // Пытаемся загрузить видео
+    video.src = videoSrc;
+    video.play().catch(err => {
+        console.warn(`[VIDEO] Автовоспроизведение заблокировано:`, err);
+        showError();
+    });
+}
+
 // --- Управление UI ---
+// --- Запуск игры ---
 function startGame(lang) {
     gameContext.currentLanguage = lang;
     document.getElementById('menu-screen').classList.add('hidden');
-    document.getElementById('video-screen').classList.remove('hidden');
-    gameContext.currentState = STATE.VIDEO;
     
-    gameContext.player = new Player('hero', 0, 5, 460, 500);
-    loadSceneResources();
+    // === ЗАПУСК ИНТРО-ВИДЕО ===
+    // После окончания видео (или пропуска) — начнётся игра
+    playVideo('intro', startGameplay);
 }
 
-function skipVideo() {
-    document.getElementById('video-screen').classList.add('hidden');
+// --- Инициализация геймплея (вызывается после интро) ---
+function startGameplay() {
     gameContext.currentState = STATE.GAMEPLAY;
-
-    // === ЗАГРУЗКА ЗВУКОВ ===
-    loadSounds();
     
-    // Инициализируем стартовую локацию по координатам
+    // Создаём игрока
+    gameContext.player = new Player('hero', 0, 5, 460, 500);
+    loadSceneResources();
+    
+    // Инициализируем стартовую локацию
     const startX = gameContext.player.mapX;
     const startY = gameContext.player.mapY;
     const startKey = getLocationKey(startX, startY);
@@ -124,9 +223,13 @@ function skipVideo() {
     
     // Спавним NPC для стартовой локации
     processLocationSpawns(startX, startY);
-
-    // === ИНИЦИАЛИЗАЦИЯ СИСТЕМЫ ДИАЛОГОВ ===
-    gameContext.dialogSystem = new DialogSystem();
+    
+    // Инициализируем систему диалогов (если ещё не инициализирована)
+    if (!gameContext.dialogSystem) {
+        gameContext.dialogSystem = new DialogSystem();
+    }
+    
+    console.log(`🎮 Игра началась. Язык: ${lang}, стартовая локация: (${startX}, ${startY})`);
 }
 
 // --- Загрузка ресурсов ---

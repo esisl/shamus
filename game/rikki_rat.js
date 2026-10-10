@@ -59,6 +59,22 @@ class RikkiRatBullet {
         }
     }
     
+    // Переопределяем kill для Rikki Rat
+    kill() {
+        if (this.status !== 'alive') return;
+        
+        // Вызываем базовый kill
+        super.kill();
+        
+        // === ЗАПУСК ВИДЕО ПОБЕДЫ (с задержкой, чтобы анимация die проигралась) ===
+        setTimeout(() => {
+            playVideo('victory', () => {
+                console.log('🏆 Игра завершена!');
+                // Здесь можно добавить возврат в меню или показ финального экрана
+            });
+        }, 2000);  // 2 секунды — время на проигрывание анимации die
+    }
+    
     draw(ctx) {
         if (!this.alive || !resources.atlas) return;
         
