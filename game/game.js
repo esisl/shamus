@@ -1,6 +1,9 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// === Фоновая музыка для меню ===
+let menuMusic = null;
+
 // --- Утилита для получения уникального ключа локации ---
 function getLocationKey(mapX, mapY) {
     return `${mapX}_${mapY}`;
@@ -192,11 +195,30 @@ function playVideo(videoKey, onComplete) {
     });
 }
 
+// --- Запуск фоновой музыки меню ---
+function startMenuMusic() {
+    menuMusic = new Audio('assets/sounds/fon.ogg');
+    menuMusic.loop = true;
+    menuMusic.volume = 0.5;
+    menuMusic.play().catch(err => {
+        console.warn('[AUDIO] Не удалось запустить музыку меню:', err);
+    });
+    console.log('🎵 Музыка меню запущена');
+}
+
 // --- Управление UI ---
 // --- Запуск игры ---
 function startGame(lang) {
     gameContext.currentLanguage = lang;
     document.getElementById('menu-screen').classList.add('hidden');
+
+    // === ОСТАНОВКА МУЗЫКИ МЕНЮ ===
+    if (menuMusic) {
+        menuMusic.pause();
+        menuMusic.currentTime = 0;
+        menuMusic = null;
+        console.log('🎵 Музыка меню остановлена');
+    }
     
     // === ЗАПУСК ИНТРО-ВИДЕО ===
     // После окончания видео (или пропуска) — начнётся игра
@@ -570,3 +592,11 @@ function onCountdownFinished() {
 
 // --- Запуск ---
 requestAnimationFrame(gameLoop);
+
+// Запускаем музыку после первого взаимодействия пользователя (для обхода блокировки браузера)
+document.addEventListener('click', function initAudio() {
+    if (!menuMusic) {
+        startMenuMusic();
+    }
+    document.removeEventListener('click', initAudio);
+}, { once: true });
