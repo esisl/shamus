@@ -9,6 +9,7 @@ function getLocationKey(mapX, mapY) {
     return `${mapX}_${mapY}`;
 }
 
+
 // --- Фабрика создания NPC ---
 function createNPCInstance(className, type, mapX, mapY, x, y) {
     switch(className) {
