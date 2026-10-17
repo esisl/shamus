@@ -457,7 +457,7 @@ function renderGameplay() {
     if (!resources.back || !resources.front || !resources.atlas || !gameContext.player) return;
 
     ctx.drawImage(resources.back, 0, 0, canvas.width, canvas.height);
-    drawDebugPolygons();
+    //drawDebugPolygons();
 
     // === 3. НОВОЕ: Сначала рисуем мёртвых NPC (на заднем плане) ===
     gameContext.npcs.forEach(npc => {
@@ -527,6 +527,7 @@ function renderGameplay() {
         });
     }
     
+    /*
     ctx.fillStyle = '#0ff';
     ctx.font = '14px monospace';
     const locId = gameContext.map[gameContext.player.mapY][gameContext.player.mapX];
@@ -535,6 +536,7 @@ function renderGameplay() {
     ctx.fillText(`На карте: (${gameContext.player.mapX}, ${gameContext.player.mapY})`, 10, 60);
     ctx.fillText(`Пуль: ${gameContext.bullets.length}`, 10, 80);
     ctx.fillText(`NPC: ${gameContext.npcs.length}`, 10, 100);
+    */
 
     // === НОВОЕ: Отрисовка таймера (правый верхний угол) ===
     if (gameContext.countdownActive) {
